@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Requests | Dashboard — Lions Diamond</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="../assets/img/logo.png" type="image/png">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><img src="../assets/img/logo.png" alt="Logo"><span>Lions Diamond</span></div>
+      <nav class="sidebar-nav">
+        <a href="index.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="members.html"><i class="fa-solid fa-users"></i> Members</a>
+        <a href="projects.html"><i class="fa-solid fa-diagram-project"></i> Projects</a>
+        <a href="join-requests.html" class="active"><i class="fa-solid fa-user-plus"></i> Join Requests</a>
+        <a href="donations.html"><i class="fa-solid fa-hand-holding-dollar"></i> Donations</a>
+        <a href="gallery.html"><i class="fa-solid fa-images"></i> Gallery</a>
+        <div class="nav-divider"></div>
+        <a href="../index.html"><i class="fa-solid fa-globe"></i> View Website</a>
+        <a href="#" id="logoutBtn" style="color:rgba(239,68,68,0.8);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-md);">
+          <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+          <h2><i class="fa-solid fa-user-plus" style="color:var(--purple-600);"></i> Join Requests</h2>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="toolbar">
+          <div class="filter-tabs" style="margin-bottom:0;">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="pending"><i class="fa-solid fa-clock"></i> Pending</button>
+            <button class="filter-tab" data-filter="approved"><i class="fa-solid fa-check"></i> Approved</button>
+            <button class="filter-tab" data-filter="rejected"><i class="fa-solid fa-xmark"></i> Rejected</button>
+          </div>
+          <p style="color:var(--gray-400);font-size:0.85rem;margin:0;"><span id="reqCount">0</span> requests</p>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="requestsBody">
+              <tr><td colspan="7" style="text-align:center;padding:var(--space-2xl);"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-lines" style="color:var(--purple-600);"></i> Request Details</h3>
+        <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import { getJoinRequests, updateJoinRequestStatus, deleteJoinRequest, addMember, formatDate } from '../js/firestore-db.js';
+
+    let allRequests = [];
+
+    function renderRequests(requests) {
+      const body = document.getElementById('requestsBody');
+      document.getElementById('reqCount').textContent = requests.length;
+
+      if (requests.length === 0) {
+        body.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No join requests found.</p></div></td></tr>';
+        return;
+      }
+
+      body.innerHTML = requests.map(r => `
+        <tr>
+          <td><strong>${r.fullName}</strong></td>
+          <td>${r.email || '—'}</td>
+          <td>${r.phone || '—'}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.message || ''}">${r.message || '—'}</td>
+          <td>${formatDate(r.submittedAt)}</td>
+          <td><span class="badge badge-${r.status}">${r.status}</span></td>
+          <td>
+            <div class="action-btns">
+              ${r.status === 'pending' ? `
+                <button class="action-btn approve" onclick="approveRequest('${r.id}','${r.fullName}','${r.email}','${r.phone}')" title="Approve"><i class="fa-solid fa-check"></i></button>
+                <button class="action-btn reject" onclick="rejectRequest('${r.id}')" title="Reject"><i class="fa-solid fa-xmark"></i></button>
+              ` : ''}
+              ${r.status === 'rejected' ? `
+                <button class="action-btn delete" onclick="removeRequest('${r.id}','${r.fullName}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+              ` : ''}
+              <button class="action-btn edit" onclick="viewDetail('${r.id}')" title="View"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadRequests() {
+      allRequests = await getJoinRequests();
+      renderRequests(allRequests);
+    }
+
+    requireAuth(() => loadRequests());
+
+    // Approve: update status + add to members
+    window.approveRequest = async (id, name, email, phone) => {
+      if (!confirm(`Approve "${name}" and add as member?`)) return;
+      await updateJoinRequestStatus(id, 'approved');
+      await addMember({ name, email, phone, position: 'Member', photoURL: '' });
+      loadRequests();
+    };
+
+    window.rejectRequest = async (id) => {
+      if (!confirm('Reject this application?')) return;
+      await updateJoinRequestStatus(id, 'rejected');
+      loadRequests();
+    };
+
+    // Delete request
+    window.removeRequest = async (id, name) => {
+      if (!confirm(`Delete application request from "${name}" permanently?`)) return;
+      await deleteJoinRequest(id);
+      loadRequests();
+    };
+
+    // View detail
+    const modal = document.getElementById('detailModal');
+    window.viewDetail = (id) => {
+      const r = allRequests.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById('detailContent').innerHTML = `
+        <div style="display:grid;gap:var(--space-md);">
+          <div><strong style="color:var(--gray-500);font-size:0.8rem;">FULL NAME</strong><p style="margin:4px 0 0;">${r.fullName}</p></div>
+          <div><strong style="color:var(--gray-500);font-size:0.8rem;">EMAIL</strong><p style="margin:4px 0 0;">${r.email}</p></div>
+          <div><strong style="color:var(--gray-500);font-size:0.8rem;">PHONE</strong><p style="margin:4px 0 0;">${r.phone}</p></div>
+          <div><strong style="color:var(--gray-500);font-size:0.8rem;">ADDRESS</strong><p style="margin:4px 0 0;">${r.address || '—'}</p></div>
+          <div><strong style="color:var(--gray-500);font-size:0.8rem;">MESSAGE</strong><p style="margin:4px 0 0;">${r.message || '—'}</p></div>
+          <div><strong style="color:var(--gray-500);font-size:0.8rem;">STATUS</strong><p style="margin:4px 0 0;"><span class="badge badge-${r.status}">${r.status}</span></p></div>
+          <div><strong style="color:var(--gray-500);font-size:0.8rem;">SUBMITTED</strong><p style="margin:4px 0 0;">${formatDate(r.submittedAt)}</p></div>
+        </div>
+      `;
+      modal.classList.add('active');
+    };
+
+    document.getElementById('modalClose').addEventListener('click', () => modal.classList.remove('active'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const f = tab.dataset.filter;
+        renderRequests(f === 'all' ? allRequests : allRequests.filter(r => r.status === f));
+      });
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); logoutUser(); });
+    document.getElementById('sidebarToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+  </script>
+
+</body>
+</html>

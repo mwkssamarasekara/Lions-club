@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse photos from Lions Diamond Homagama events, meetings, service projects, and donation drives.">
+  <title>Gallery | Lions Diamond Homagama</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+  <link rel="icon" href="assets/img/logo.png" type="image/png">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="assets/img/logo.png" alt="Logo">
+        <span>Lions Diamond</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="gallery.html" class="active">Gallery</a>
+        <a href="contact.html">Contact</a>
+        <a href="donate.html" class="nav-cta"><i class="fa-solid fa-heart"></i> Donate</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="dashboard/login.html" class="nav-profile" aria-label="Login / Profile">
+          <i class="fa-solid fa-user"></i>
+        </a>
+      </div>
+      <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <h1 data-aos="fade-up"><i class="fa-solid fa-images"></i> Gallery</h1>
+    <p data-aos="fade-up" data-aos-delay="100">Relive the moments from our events, meetings, and service projects.</p>
+    <div class="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+      <a href="index.html">Home</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>Gallery</span>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="section">
+    <div class="container">
+      <div class="filter-tabs" data-aos="fade-up">
+        <button class="filter-tab active" data-filter="All"><i class="fa-solid fa-grip"></i> All</button>
+        <button class="filter-tab" data-filter="Meeting"><i class="fa-solid fa-handshake"></i> Meetings</button>
+        <button class="filter-tab" data-filter="Service"><i class="fa-solid fa-hands-helping"></i> Service</button>
+        <button class="filter-tab" data-filter="Donation"><i class="fa-solid fa-heart"></i> Donations</button>
+      </div>
+
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="spinner" style="grid-column: 1/-1;"></div>
+      </div>
+
+      <div class="empty-state" id="emptyGallery" style="display: none;">
+        <i class="fa-solid fa-image"></i>
+        <p>No images found in this category.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose"><i class="fa-solid fa-xmark"></i></button>
+    <img id="lightboxImg" src="" alt="Gallery Image">
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="assets/img/logo.png" alt="Lions Diamond Homagama">
+          <p>Serving the community through compassion and dedication.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div><h4>Quick Links</h4><div class="footer-links"><a href="about.html"><i class="fa-solid fa-chevron-right"></i> About</a><a href="projects.html"><i class="fa-solid fa-chevron-right"></i> Projects</a><a href="gallery.html"><i class="fa-solid fa-chevron-right"></i> Gallery</a><a href="contact.html"><i class="fa-solid fa-chevron-right"></i> Contact</a></div></div>
+        <div><h4>Get Involved</h4><div class="footer-links"><a href="join.html"><i class="fa-solid fa-chevron-right"></i> Join Us</a><a href="donate.html"><i class="fa-solid fa-chevron-right"></i> Donate</a></div></div>
+        <div><h4>Contact</h4><div class="footer-links"><a href="tel:+94771234567"><i class="fa-solid fa-phone"></i> +94 77 123 4567</a><a href="mailto:info@lionsdiamond.lk"><i class="fa-solid fa-envelope"></i> info@lionsdiamond.lk</a></div></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2026 Lions Diamond Homagama. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <!-- Theme initializer -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('lions-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    })();
+  </script>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true, offset: 50 });
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navToggle').classList.toggle('active');
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Dark / Light Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('lions-theme', next);
+    });
+  </script>
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    document.getElementById('lightboxClose').addEventListener('click', () => lightbox.classList.remove('active'));
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('active'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') lightbox.classList.remove('active'); });
+
+    function openLightbox(url) {
+      lightboxImg.src = url;
+      lightbox.classList.add('active');
+    }
+    window.openLightbox = openLightbox;
+  </script>
+
+  <script type="module">
+    import { getGalleryImages } from './js/firestore-db.js';
+
+    let allImages = [];
+
+    const fallbackImages = [
+      { imageURL: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600', category: 'Service' },
+      { imageURL: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600', category: 'Meeting' },
+      { imageURL: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600', category: 'Donation' },
+      { imageURL: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600', category: 'Service' },
+      { imageURL: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=600', category: 'Meeting' },
+      { imageURL: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=600', category: 'Donation' },
+      { imageURL: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600', category: 'Service' },
+      { imageURL: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600', category: 'Service' },
+      { imageURL: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600', category: 'Meeting' },
+    ];
+
+    function renderGallery(images) {
+      const grid = document.getElementById('galleryGrid');
+      const empty = document.getElementById('emptyGallery');
+
+      if (images.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.innerHTML = images.map((img, i) => `
+        <div class="gallery-item" data-aos="fade-up" data-aos-delay="${(i % 4) * 100}" onclick="openLightbox('${img.imageURL}')">
+          <img src="${img.imageURL}" alt="${img.category || 'Gallery'}" loading="lazy">
+          <div class="gallery-item-overlay">
+            <span><i class="fa-solid fa-tag"></i> ${img.category || 'Uncategorized'}</span>
+          </div>
+        </div>
+      `).join('');
+      AOS.refresh();
+    }
+
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.getAttribute('data-filter');
+        if (filter === 'All') {
+          renderGallery(allImages);
+        } else {
+          renderGallery(allImages.filter(img => img.category === filter));
+        }
+      });
+    });
+
+    async function loadGallery() {
+      try {
+        allImages = await getGalleryImages();
+        if (allImages.length === 0) allImages = fallbackImages;
+        renderGallery(allImages);
+      } catch (e) {
+        allImages = fallbackImages;
+        renderGallery(allImages);
+      }
+    }
+
+    loadGallery();
+  </script>
+
+</body>
+</html>

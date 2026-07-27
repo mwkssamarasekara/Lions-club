@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Members | Dashboard — Lions Diamond</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="../assets/img/logo.png" type="image/png">
+  <!-- PDF Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><img src="../assets/img/logo.png" alt="Logo"><span>Lions Diamond</span></div>
+      <nav class="sidebar-nav">
+        <a href="index.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="members.html" class="active"><i class="fa-solid fa-users"></i> Members</a>
+        <a href="projects.html"><i class="fa-solid fa-diagram-project"></i> Projects</a>
+        <a href="join-requests.html"><i class="fa-solid fa-user-plus"></i> Join Requests</a>
+        <a href="donations.html"><i class="fa-solid fa-hand-holding-dollar"></i> Donations</a>
+        <a href="gallery.html"><i class="fa-solid fa-images"></i> Gallery</a>
+        <div class="nav-divider"></div>
+        <a href="../index.html"><i class="fa-solid fa-globe"></i> View Website</a>
+        <a href="#" id="logoutBtn" style="color:rgba(239,68,68,0.8);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-md);">
+          <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+          <h2><i class="fa-solid fa-users" style="color:var(--blue-600);"></i> Members</h2>
+        </div>
+        <div style="display:flex; gap: var(--space-sm);">
+          <button class="btn btn-sm btn-outline" id="downloadPdfBtn"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+          <button class="btn btn-sm btn-primary" id="addMemberBtn"><i class="fa-solid fa-plus"></i> Add Member</button>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="toolbar">
+          <div class="search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search members...">
+          </div>
+          <p style="color:var(--gray-400);font-size:0.85rem;margin:0;"><span id="memberCount">0</span> members</p>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Position</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="membersBody">
+              <tr><td colspan="6" style="text-align:center;padding:var(--space-2xl);"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" id="memberModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle"><i class="fa-solid fa-user-plus" style="color:var(--blue-600);"></i> Add Member</h3>
+        <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="memberForm">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> Name</label>
+          <input type="text" class="form-control" id="mName" placeholder="Full name" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email</label>
+          <input type="email" class="form-control" id="mEmail" placeholder="email@example.com" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-phone"></i> Phone</label>
+          <input type="tel" class="form-control" id="mPhone" placeholder="+94 7X XXX XXXX" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-briefcase"></i> Position</label>
+          <select class="form-control" id="mPosition" required>
+            <option value="Member">Member</option>
+            <option value="President">President</option>
+            <option value="Secretary">Secretary</option>
+            <option value="Treasurer">Treasurer</option>
+            <option value="Director">Director</option>
+            <option value="Vice President">Vice President</option>
+            <option value="Past President">Past President</option>
+          </select>
+        </div>
+
+        <!-- Photo Upload Section -->
+        <div class="upload-tabs">
+          <button type="button" class="upload-tab active" data-upload-mode="file"><i class="fa-solid fa-computer"></i> Upload File</button>
+          <button type="button" class="upload-tab" data-upload-mode="url"><i class="fa-solid fa-link"></i> Image URL</button>
+        </div>
+
+        <!-- File Upload Zone -->
+        <div id="uploadFileSection">
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="photoFile" accept="image/*">
+            <div class="upload-zone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <p class="upload-zone-text"><strong>Click to choose</strong> or drag & drop</p>
+            <p class="upload-zone-hint">PNG, JPG, WEBP up to 5MB</p>
+          </div>
+          <div class="upload-preview" id="filePreview">
+            <img id="filePreviewImg" src="" alt="Preview">
+          </div>
+        </div>
+
+        <!-- URL Input (hidden by default) -->
+        <div id="uploadURLSection" style="display:none;">
+          <div class="form-group">
+            <label><i class="fa-solid fa-link"></i> Photo URL</label>
+            <input type="url" class="form-control" id="mPhoto" placeholder="https://example.com/photo.jpg">
+          </div>
+          <div id="urlPreview" style="display:none;margin-bottom:var(--space-lg);border-radius:var(--radius-md);overflow:hidden;max-height:180px;">
+            <img id="urlPreviewImg" src="" alt="Preview" style="width:100%;height:180px;object-fit:cover;">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-blue" style="width:100%;justify-content:center;" id="saveBtn">
+          <i class="fa-solid fa-save"></i> Save Member
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import { getMembers, addMember, updateMember, deleteMember, formatDate } from '../js/firestore-db.js';
+
+    let allMembers = [];
+    let uploadMode = 'file';
+    let selectedFileData = null;
+
+    function renderMembers(members) {
+      const body = document.getElementById('membersBody');
+      document.getElementById('memberCount').textContent = members.length;
+
+      if (members.length === 0) {
+        body.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-users"></i><p>No members found.</p></div></td></tr>';
+        return;
+      }
+
+      body.innerHTML = members.map(m => `
+        <tr>
+          <td style="display:flex;align-items:center;gap:var(--space-sm);">
+            ${m.photoURL
+              ? `<img src="${m.photoURL}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`
+              : `<div style="width:32px;height:32px;border-radius:50%;background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;color:white;font-size:0.7rem;flex-shrink:0;"><i class="fa-solid fa-user"></i></div>`
+            }
+            <strong>${m.name}</strong>
+          </td>
+          <td>${m.email || '—'}</td>
+          <td>${m.phone || '—'}</td>
+          <td><span class="badge badge-${m.position === 'President' ? 'approved' : 'upcoming'}">${m.position || 'Member'}</span></td>
+          <td>${formatDate(m.joinedDate)}</td>
+          <td>
+            <div class="action-btns">
+              <button class="action-btn edit" onclick="editMember('${m.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+              <button class="action-btn delete" onclick="removeMember('${m.id}','${m.name}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadMembers() {
+      allMembers = await getMembers();
+      renderMembers(allMembers);
+    }
+
+    requireAuth(() => loadMembers());
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      renderMembers(allMembers.filter(m =>
+        m.name?.toLowerCase().includes(q) ||
+        m.email?.toLowerCase().includes(q) ||
+        m.position?.toLowerCase().includes(q)
+      ));
+    });
+
+    // Modal
+    const modal = document.getElementById('memberModal');
+    const openModal = () => modal.classList.add('active');
+
+    function resetUploadForm() {
+      document.getElementById('memberForm').reset();
+      document.getElementById('editId').value = '';
+      document.getElementById('filePreview').style.display = 'none';
+      document.getElementById('urlPreview').style.display = 'none';
+      selectedFileData = null;
+      uploadMode = 'file';
+      document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('.upload-tab[data-upload-mode="file"]').classList.add('active');
+      document.getElementById('uploadFileSection').style.display = 'block';
+      document.getElementById('uploadURLSection').style.display = 'none';
+    }
+
+    const closeModal = () => { modal.classList.remove('active'); resetUploadForm(); };
+
+    document.getElementById('addMemberBtn').addEventListener('click', () => {
+      document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-plus" style="color:var(--blue-600);"></i> Add Member';
+      resetUploadForm();
+      openModal();
+    });
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    // Upload mode tabs
+    document.querySelectorAll('.upload-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        uploadMode = tab.dataset.uploadMode;
+        document.getElementById('uploadFileSection').style.display = uploadMode === 'file' ? 'block' : 'none';
+        document.getElementById('uploadURLSection').style.display = uploadMode === 'url' ? 'block' : 'none';
+      });
+    });
+
+    // File upload
+    const fileInput = document.getElementById('photoFile');
+    const uploadZone = document.getElementById('uploadZone');
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleFileSelect(file);
+    });
+
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) handleFileSelect(file);
+    });
+
+    function handleFileSelect(file) {
+      if (file.size > 5 * 1024 * 1024) { alert('File too large. Maximum 5MB.'); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        selectedFileData = e.target.result;
+        document.getElementById('filePreviewImg').src = selectedFileData;
+        document.getElementById('filePreview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // URL preview
+    document.getElementById('mPhoto').addEventListener('input', (e) => {
+      const url = e.target.value;
+      const preview = document.getElementById('urlPreview');
+      const img = document.getElementById('urlPreviewImg');
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        img.src = url;
+        preview.style.display = 'block';
+        img.onerror = () => { preview.style.display = 'none'; };
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+
+    // Edit
+    window.editMember = (id) => {
+      const m = allMembers.find(x => x.id === id);
+      if (!m) return;
+      resetUploadForm();
+      document.getElementById('editId').value = id;
+      document.getElementById('mName').value = m.name || '';
+      document.getElementById('mEmail').value = m.email || '';
+      document.getElementById('mPhone').value = m.phone || '';
+      document.getElementById('mPosition').value = m.position || 'Member';
+
+      // If existing photo, show it in URL mode
+      if (m.photoURL) {
+        uploadMode = 'url';
+        document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector('.upload-tab[data-upload-mode="url"]').classList.add('active');
+        document.getElementById('uploadFileSection').style.display = 'none';
+        document.getElementById('uploadURLSection').style.display = 'block';
+        document.getElementById('mPhoto').value = m.photoURL;
+        document.getElementById('urlPreviewImg').src = m.photoURL;
+        document.getElementById('urlPreview').style.display = 'block';
+      }
+
+      document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen" style="color:var(--blue-600);"></i> Edit Member';
+      openModal();
+    };
+
+    // Delete
+    window.removeMember = async (id, name) => {
+      if (!confirm(`Remove "${name}" from members?`)) return;
+      await deleteMember(id);
+      loadMembers();
+    };
+
+    // Download PDF Report
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Title & Header info
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.setTextColor(15, 35, 71); // Navy blue
+      doc.text("LIONS CLUB OF HOMAGAMA DIAMONDS", 14, 20);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.setTextColor(100, 110, 120);
+      doc.text("Official Club Members Directory", 14, 27);
+      doc.text(`Generated on: ${new Date().toLocaleDateString('en-LK')} | Total Members: ${allMembers.length}`, 14, 33);
+
+      // AutoTable data conversion
+      const tableHeaders = [["Name", "Email", "Phone", "Position", "Joined Date"]];
+      const tableRows = allMembers.map(m => [
+        m.name || '—',
+        m.email || '—',
+        m.phone || '—',
+        m.position || 'Member',
+        formatDate(m.joinedDate)
+      ]);
+
+      doc.autoTable({
+        startY: 38,
+        head: tableHeaders,
+        body: tableRows,
+        theme: 'striped',
+        headStyles: { fillColor: [15, 35, 71], textContrast: 1 },
+        styles: { font: "helvetica", fontSize: 9 },
+        margin: { top: 35 }
+      });
+
+      doc.save(`Lions_Homagama_Members_${new Date().toISOString().split('T')[0]}.pdf`);
+    });
+
+    // Save
+    document.getElementById('memberForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0;border-width:2px;"></div>';
+
+      let photoURL = '';
+      if (uploadMode === 'file' && selectedFileData) {
+        photoURL = selectedFileData;
+      } else if (uploadMode === 'url') {
+        photoURL = document.getElementById('mPhoto').value || '';
+      }
+
+      const data = {
+        name: document.getElementById('mName').value,
+        email: document.getElementById('mEmail').value,
+        phone: document.getElementById('mPhone').value,
+        position: document.getElementById('mPosition').value,
+        photoURL: photoURL
+      };
+
+      const editId = document.getElementById('editId').value;
+      if (editId) {
+        await updateMember(editId, data);
+      } else {
+        await addMember(data);
+      }
+
+      closeModal();
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-save"></i> Save Member';
+      loadMembers();
+    });
+
+    // Sidebar & Logout
+    document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); logoutUser(); });
+    document.getElementById('sidebarToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+  </script>
+
+</body>
+</html>

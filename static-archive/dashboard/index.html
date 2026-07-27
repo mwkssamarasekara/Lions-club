@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Lions Diamond Homagama</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="../assets/img/logo.png" type="image/png">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <img src="../assets/img/logo.png" alt="Logo">
+        <span>Lions Diamond</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="members.html"><i class="fa-solid fa-users"></i> Members</a>
+        <a href="projects.html"><i class="fa-solid fa-diagram-project"></i> Projects</a>
+        <a href="join-requests.html"><i class="fa-solid fa-user-plus"></i> Join Requests</a>
+        <a href="donations.html"><i class="fa-solid fa-hand-holding-dollar"></i> Donations</a>
+        <a href="gallery.html"><i class="fa-solid fa-images"></i> Gallery</a>
+        <div class="nav-divider"></div>
+        <a href="../index.html"><i class="fa-solid fa-globe"></i> View Website</a>
+        <a href="#" id="logoutBtn" style="color: rgba(239,68,68,0.8);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div style="display: flex; align-items: center; gap: var(--space-md);">
+          <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+          <h2><i class="fa-solid fa-gauge-high" style="color: var(--blue-600);"></i> Dashboard</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: var(--space-md);">
+          <span style="font-size: 0.85rem; color: var(--gray-500);" id="userEmail"></span>
+          <div style="width: 36px; height: 36px; border-radius: var(--radius-full); background: var(--gradient-blue); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem;">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        </div>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+          <div class="summary-card blue">
+            <div class="summary-card-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="summary-card-info">
+              <h3 id="totalMembers">—</h3>
+              <p>Total Members</p>
+            </div>
+          </div>
+          <div class="summary-card gold">
+            <div class="summary-card-icon"><i class="fa-solid fa-user-clock"></i></div>
+            <div class="summary-card-info">
+              <h3 id="pendingRequests">—</h3>
+              <p>Pending Requests</p>
+            </div>
+          </div>
+          <div class="summary-card green">
+            <div class="summary-card-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <div class="summary-card-info">
+              <h3 id="totalDonations">—</h3>
+              <p>Total Donations</p>
+            </div>
+          </div>
+          <div class="summary-card purple">
+            <div class="summary-card-icon"><i class="fa-solid fa-images"></i></div>
+            <div class="summary-card-info">
+              <h3 id="galleryCount">—</h3>
+              <p>Gallery Images</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--space-xl); box-shadow: var(--shadow-sm); margin-bottom: var(--space-xl);">
+          <h3 style="margin-bottom: var(--space-lg);"><i class="fa-solid fa-bolt" style="color: var(--yellow-500);"></i> Quick Actions</h3>
+          <div style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+            <a href="members.html" class="btn btn-sm btn-blue"><i class="fa-solid fa-user-plus"></i> Add Member</a>
+            <a href="join-requests.html" class="btn btn-sm btn-purple"><i class="fa-solid fa-clipboard-check"></i> Review Requests</a>
+            <a href="donations.html" class="btn btn-sm btn-primary"><i class="fa-solid fa-chart-line"></i> View Donations</a>
+            <a href="gallery.html" class="btn btn-sm btn-outline"><i class="fa-solid fa-upload"></i> Upload Photo</a>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="grid-2">
+          <!-- Recent Join Requests -->
+          <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--space-xl); box-shadow: var(--shadow-sm);">
+            <h3 style="margin-bottom: var(--space-lg); display: flex; align-items: center; justify-content: space-between;">
+              <span><i class="fa-solid fa-user-plus" style="color: var(--purple-600);"></i> Recent Requests</span>
+              <a href="join-requests.html" style="font-size: 0.8rem; color: var(--blue-600);">View All →</a>
+            </h3>
+            <div id="recentRequests">
+              <div class="spinner"></div>
+            </div>
+          </div>
+
+          <!-- Recent Donations -->
+          <div style="background: var(--white); border-radius: var(--radius-lg); padding: var(--space-xl); box-shadow: var(--shadow-sm);">
+            <h3 style="margin-bottom: var(--space-lg); display: flex; align-items: center; justify-content: space-between;">
+              <span><i class="fa-solid fa-hand-holding-dollar" style="color: var(--success);"></i> Recent Donations</span>
+              <a href="donations.html" style="font-size: 0.8rem; color: var(--blue-600);">View All →</a>
+            </h3>
+            <div id="recentDonations">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import { getCollectionCount, getJoinRequests, getDonations, formatDate, formatCurrency } from '../js/firestore-db.js';
+
+    // Auth guard
+    requireAuth(async (user) => {
+      document.getElementById('userEmail').textContent = user.email;
+
+      // Load summary counts
+      const [members, pending, donations, gallery] = await Promise.all([
+        getCollectionCount('members'),
+        getCollectionCount('joinRequests', 'status', 'pending'),
+        getCollectionCount('donations'),
+        getCollectionCount('gallery')
+      ]);
+
+      document.getElementById('totalMembers').textContent = members;
+      document.getElementById('pendingRequests').textContent = pending;
+      document.getElementById('totalDonations').textContent = donations;
+      document.getElementById('galleryCount').textContent = gallery;
+
+      // Load recent requests
+      const requests = await getJoinRequests();
+      const recentReqs = requests.slice(0, 5);
+      const reqContainer = document.getElementById('recentRequests');
+      if (recentReqs.length === 0) {
+        reqContainer.innerHTML = '<p style="color: var(--gray-400); font-size: 0.9rem; text-align: center;">No join requests yet.</p>';
+      } else {
+        reqContainer.innerHTML = recentReqs.map(r => `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--gray-100);">
+            <div>
+              <p style="font-weight: 600; margin: 0; font-size: 0.9rem;">${r.fullName}</p>
+              <p style="color: var(--gray-400); margin: 0; font-size: 0.8rem;">${formatDate(r.submittedAt)}</p>
+            </div>
+            <span class="badge badge-${r.status}">${r.status}</span>
+          </div>
+        `).join('');
+      }
+
+      // Load recent donations
+      const allDonations = await getDonations();
+      const recentDons = allDonations.slice(0, 5);
+      const donContainer = document.getElementById('recentDonations');
+      if (recentDons.length === 0) {
+        donContainer.innerHTML = '<p style="color: var(--gray-400); font-size: 0.9rem; text-align: center;">No donations yet.</p>';
+      } else {
+        donContainer.innerHTML = recentDons.map(d => `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--gray-100);">
+            <div>
+              <p style="font-weight: 600; margin: 0; font-size: 0.9rem;">${d.fullName}</p>
+              <p style="color: var(--gray-400); margin: 0; font-size: 0.8rem;">${d.purpose} · ${formatDate(d.submittedAt)}</p>
+            </div>
+            <span style="font-weight: 700; color: var(--success);">${formatCurrency(d.amount)}</span>
+          </div>
+        `).join('');
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      logoutUser();
+    });
+
+    // Sidebar toggle
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+    });
+  </script>
+
+</body>
+</html>

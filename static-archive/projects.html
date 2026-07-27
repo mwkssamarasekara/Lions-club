@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore Lions Diamond Homagama's community service projects — past, present, and upcoming. See the impact we're creating in Homagama.">
+  <title>Projects | Lions Diamond Homagama</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+  <link rel="icon" href="assets/img/logo.png" type="image/png">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="assets/img/logo.png" alt="Lions Diamond Homagama Logo">
+        <span>Lions Diamond</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
+        <a href="donate.html" class="nav-cta"><i class="fa-solid fa-heart"></i> Donate</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="dashboard/login.html" class="nav-profile" aria-label="Login / Profile">
+          <i class="fa-solid fa-user"></i>
+        </a>
+      </div>
+      <div class="nav-toggle" id="navToggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <h1 data-aos="fade-up">Our Projects</h1>
+    <p data-aos="fade-up" data-aos-delay="100">Discover the community initiatives that define our commitment to service.</p>
+    <div class="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+      <a href="index.html">Home</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>Projects</span>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="section">
+    <div class="container">
+      <!-- Filter Tabs -->
+      <div class="filter-tabs" data-aos="fade-up">
+        <button class="filter-tab active" data-filter="all">All Projects</button>
+        <button class="filter-tab" data-filter="Upcoming"><i class="fa-solid fa-clock"></i> Upcoming</button>
+        <button class="filter-tab" data-filter="Completed"><i class="fa-solid fa-check"></i> Completed</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="grid-3" id="projectsGrid">
+        <div class="spinner" style="grid-column: 1/-1;"></div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fa-solid fa-folder-open"></i>
+        <p>No projects found in this category.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container" data-aos="zoom-in">
+      <h2>Support Our Projects</h2>
+      <p>Your donation helps us fund community initiatives and create lasting impact.</p>
+      <a href="donate.html" class="btn btn-primary"><i class="fa-solid fa-hand-holding-heart"></i> Donate Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="assets/img/logo.png" alt="Lions Diamond Homagama">
+          <p>Lions Diamond Homagama is committed to serving the community through volunteer programs, charitable donations, and impactful projects.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <div class="footer-links">
+            <a href="about.html"><i class="fa-solid fa-chevron-right"></i> About Us</a>
+            <a href="projects.html"><i class="fa-solid fa-chevron-right"></i> Projects</a>
+            <a href="gallery.html"><i class="fa-solid fa-chevron-right"></i> Gallery</a>
+            <a href="contact.html"><i class="fa-solid fa-chevron-right"></i> Contact</a>
+          </div>
+        </div>
+        <div>
+          <h4>Get Involved</h4>
+          <div class="footer-links">
+            <a href="join.html"><i class="fa-solid fa-chevron-right"></i> Join Us</a>
+            <a href="donate.html"><i class="fa-solid fa-chevron-right"></i> Donate</a>
+          </div>
+        </div>
+        <div>
+          <h4>Contact Us</h4>
+          <div class="footer-links">
+            <a href="tel:+94771234567"><i class="fa-solid fa-phone"></i> +94 77 123 4567</a>
+            <a href="mailto:info@lionsdiamond.lk"><i class="fa-solid fa-envelope"></i> info@lionsdiamond.lk</a>
+            <a href="#"><i class="fa-solid fa-location-dot"></i> Homagama, Sri Lanka</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Lions Diamond Homagama. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Theme initializer -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('lions-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    })();
+  </script>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true, offset: 50 });
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('active');
+      navLinks.classList.toggle('open');
+    });
+
+    // Dark / Light Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('lions-theme', next);
+    });
+  </script>
+
+  <script type="module">
+    import { getEvents, formatDate } from './js/firestore-db.js';
+
+    let allEvents = [];
+
+    function renderProjects(events) {
+      const grid = document.getElementById('projectsGrid');
+      const empty = document.getElementById('emptyState');
+
+      if (events.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.innerHTML = events.map((event, i) => `
+        <div class="card" data-aos="fade-up" data-aos-delay="${(i % 3) * 100}">
+          <div class="card-img-wrapper">
+            <img class="card-img" src="${event.imageURL || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600'}" alt="${event.title}">
+            <span class="card-badge ${event.status === 'Upcoming' ? 'upcoming' : 'completed'}">${event.status || 'Completed'}</span>
+          </div>
+          <div class="card-body">
+            <h3>${event.title}</h3>
+            <p>${event.description || ''}</p>
+            <div class="card-meta">
+              <span><i class="fa-regular fa-calendar"></i> ${formatDate(event.date)}</span>
+              <span><i class="fa-solid fa-location-dot"></i> ${event.location || 'Homagama'}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      AOS.refresh();
+    }
+
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.getAttribute('data-filter');
+        if (filter === 'all') {
+          renderProjects(allEvents);
+        } else {
+          renderProjects(allEvents.filter(e => e.status === filter));
+        }
+      });
+    });
+
+    async function loadProjects() {
+      try {
+        allEvents = await getEvents();
+        if (allEvents.length === 0) {
+          // Fallback demo
+          allEvents = [
+            { title: 'Eye Screening Camp', description: 'Free eye screening for 200+ residents in Homagama area.', status: 'Completed', location: 'Homagama Town Hall', date: null, imageURL: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600' },
+            { title: 'School Supplies Drive', description: 'Distributed school supplies to 150 underprivileged students.', status: 'Completed', location: 'Homagama Central College', date: null, imageURL: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600' },
+            { title: 'Blood Donation Camp', description: 'Collected 100+ units of blood for the national blood bank.', status: 'Upcoming', location: 'Community Center', date: null, imageURL: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=600' },
+            { title: 'Environmental Cleanup', description: 'Beach and river cleanup drive with 80+ volunteers.', status: 'Completed', location: 'Bolgoda Lake', date: null, imageURL: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=600' },
+            { title: 'Food Distribution', description: 'Monthly food distribution for 100+ low-income families.', status: 'Upcoming', location: 'Homagama Temple', date: null, imageURL: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600' },
+            { title: 'Free Medical Camp', description: 'Health checkup with volunteer doctors and nurses.', status: 'Completed', location: 'Homagama Hospital', date: null, imageURL: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600' },
+          ];
+        }
+        renderProjects(allEvents);
+      } catch (e) {
+        document.getElementById('projectsGrid').innerHTML = '<p class="text-center" style="grid-column:1/-1; color: var(--gray-400);">Unable to load projects.</p>';
+      }
+    }
+
+    loadProjects();
+  </script>
+
+</body>
+</html>

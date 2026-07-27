@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | Dashboard — Lions Diamond</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="../assets/img/logo.png" type="image/png">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><img src="../assets/img/logo.png" alt="Logo"><span>Lions Diamond</span></div>
+      <nav class="sidebar-nav">
+        <a href="index.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="members.html"><i class="fa-solid fa-users"></i> Members</a>
+        <a href="projects.html" class="active"><i class="fa-solid fa-diagram-project"></i> Projects</a>
+        <a href="join-requests.html"><i class="fa-solid fa-user-plus"></i> Join Requests</a>
+        <a href="donations.html"><i class="fa-solid fa-hand-holding-dollar"></i> Donations</a>
+        <a href="gallery.html"><i class="fa-solid fa-images"></i> Gallery</a>
+        <div class="nav-divider"></div>
+        <a href="../index.html"><i class="fa-solid fa-globe"></i> View Website</a>
+        <a href="#" id="logoutBtn" style="color:rgba(239,68,68,0.8);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-md);">
+          <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+          <h2><i class="fa-solid fa-diagram-project" style="color:var(--yellow-500);"></i> Projects</h2>
+        </div>
+        <button class="btn btn-sm btn-primary" id="addProjectBtn"><i class="fa-solid fa-plus"></i> Add Project</button>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- Summary Cards -->
+        <div class="summary-grid" style="margin-bottom:var(--space-xl);">
+          <div class="summary-card blue">
+            <div class="summary-card-icon"><i class="fa-solid fa-folder-open"></i></div>
+            <div class="summary-card-info">
+              <h3 id="totalProjects">—</h3>
+              <p>Total Projects</p>
+            </div>
+          </div>
+          <div class="summary-card gold">
+            <div class="summary-card-icon"><i class="fa-solid fa-clock"></i></div>
+            <div class="summary-card-info">
+              <h3 id="upcomingCount">—</h3>
+              <p>Upcoming</p>
+            </div>
+          </div>
+          <div class="summary-card green">
+            <div class="summary-card-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="summary-card-info">
+              <h3 id="completedCount">—</h3>
+              <p>Completed</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="filter-tabs" style="margin-bottom:0;">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="Upcoming"><i class="fa-solid fa-clock"></i> Upcoming</button>
+            <button class="filter-tab" data-filter="Completed"><i class="fa-solid fa-check"></i> Completed</button>
+          </div>
+          <div class="search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search projects...">
+          </div>
+        </div>
+
+        <!-- Projects Table -->
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="projectsBody">
+              <tr><td colspan="7" style="text-align:center;padding:var(--space-2xl);"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Project Modal -->
+  <div class="modal-overlay" id="projectModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle"><i class="fa-solid fa-plus" style="color:var(--yellow-500);"></i> Add Project</h3>
+        <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="projectForm">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label><i class="fa-solid fa-heading"></i> Title</label>
+          <input type="text" class="form-control" id="pTitle" placeholder="Project title" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-align-left"></i> Description</label>
+          <textarea class="form-control" id="pDescription" placeholder="Describe the project..." rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-calendar"></i> Date</label>
+          <input type="date" class="form-control" id="pDate" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-location-dot"></i> Location</label>
+          <input type="text" class="form-control" id="pLocation" placeholder="e.g. Homagama Town Hall" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-toggle-on"></i> Status</label>
+          <select class="form-control" id="pStatus" required>
+            <option value="Upcoming">Upcoming</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div class="upload-tabs">
+          <button type="button" class="upload-tab active" data-upload-mode="file"><i class="fa-solid fa-computer"></i> Upload File</button>
+          <button type="button" class="upload-tab" data-upload-mode="url"><i class="fa-solid fa-link"></i> Image URL</button>
+        </div>
+
+        <!-- File Upload Zone -->
+        <div id="uploadFileSection">
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="imageFile" accept="image/*">
+            <div class="upload-zone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <p class="upload-zone-text"><strong>Click to choose</strong> or drag & drop</p>
+            <p class="upload-zone-hint">PNG, JPG, WEBP up to 5MB</p>
+          </div>
+          <div class="upload-preview" id="filePreview">
+            <img id="filePreviewImg" src="" alt="Preview">
+          </div>
+        </div>
+
+        <!-- URL Input (hidden by default) -->
+        <div id="uploadURLSection" style="display:none;">
+          <div class="form-group">
+            <label><i class="fa-solid fa-link"></i> Image URL</label>
+            <input type="url" class="form-control" id="pImage" placeholder="https://example.com/photo.jpg">
+          </div>
+          <div id="urlPreview" style="display:none;margin-bottom:var(--space-lg);border-radius:var(--radius-md);overflow:hidden;max-height:180px;">
+            <img id="urlPreviewImg" src="" alt="Preview" style="width:100%;height:180px;object-fit:cover;">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="saveBtn">
+          <i class="fa-solid fa-save"></i> Save Project
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import { getEvents, addEvent, updateEvent, deleteEvent, formatDate } from '../js/firestore-db.js';
+
+    let allProjects = [];
+    let uploadMode = 'file';
+    let selectedFileData = null;
+
+    function updateSummary() {
+      const upcoming = allProjects.filter(p => p.status === 'Upcoming').length;
+      const completed = allProjects.filter(p => p.status === 'Completed').length;
+      document.getElementById('totalProjects').textContent = allProjects.length;
+      document.getElementById('upcomingCount').textContent = upcoming;
+      document.getElementById('completedCount').textContent = completed;
+    }
+
+    function renderProjects(projects) {
+      const body = document.getElementById('projectsBody');
+
+      if (projects.length === 0) {
+        body.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>No projects found.</p></div></td></tr>';
+        return;
+      }
+
+      body.innerHTML = projects.map(p => `
+        <tr>
+          <td>
+            ${p.imageURL
+              ? `<img src="${p.imageURL}" style="width:60px;height:40px;border-radius:var(--radius-sm);object-fit:cover;">`
+              : `<div style="width:60px;height:40px;border-radius:var(--radius-sm);background:var(--gray-100);display:flex;align-items:center;justify-content:center;color:var(--gray-400);font-size:0.8rem;"><i class="fa-solid fa-image"></i></div>`
+            }
+          </td>
+          <td><strong>${p.title}</strong></td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p.description || ''}">${p.description || '—'}</td>
+          <td>${formatDate(p.date)}</td>
+          <td>${p.location || '—'}</td>
+          <td><span class="badge badge-${p.status === 'Upcoming' ? 'upcoming' : 'completed'}">${p.status || 'Upcoming'}</span></td>
+          <td>
+            <div class="action-btns">
+              <button class="action-btn edit" onclick="editProject('${p.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+              <button class="action-btn delete" onclick="removeProject('${p.id}','${p.title}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadProjects() {
+      allProjects = await getEvents();
+      renderProjects(allProjects);
+      updateSummary();
+    }
+
+    requireAuth(() => loadProjects());
+
+    // ---- Search ----
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      renderProjects(allProjects.filter(p =>
+        p.title?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q) ||
+        p.location?.toLowerCase().includes(q)
+      ));
+    });
+
+    // ---- Filter Tabs ----
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const f = tab.dataset.filter;
+        renderProjects(f === 'all' ? allProjects : allProjects.filter(p => p.status === f));
+      });
+    });
+
+    // ---- Modal ----
+    const modal = document.getElementById('projectModal');
+    const openModal = () => modal.classList.add('active');
+
+    function resetUploadForm() {
+      document.getElementById('projectForm').reset();
+      document.getElementById('editId').value = '';
+      document.getElementById('filePreview').style.display = 'none';
+      document.getElementById('urlPreview').style.display = 'none';
+      selectedFileData = null;
+      uploadMode = 'file';
+      document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('.upload-tab[data-upload-mode="file"]').classList.add('active');
+      document.getElementById('uploadFileSection').style.display = 'block';
+      document.getElementById('uploadURLSection').style.display = 'none';
+    }
+
+    const closeModal = () => { modal.classList.remove('active'); resetUploadForm(); };
+
+    document.getElementById('addProjectBtn').addEventListener('click', () => {
+      document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-plus" style="color:var(--yellow-500);"></i> Add Project';
+      resetUploadForm();
+      openModal();
+    });
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    // ---- Upload mode tabs ----
+    document.querySelectorAll('.upload-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        uploadMode = tab.dataset.uploadMode;
+        document.getElementById('uploadFileSection').style.display = uploadMode === 'file' ? 'block' : 'none';
+        document.getElementById('uploadURLSection').style.display = uploadMode === 'url' ? 'block' : 'none';
+      });
+    });
+
+    // ---- File upload ----
+    const fileInput = document.getElementById('imageFile');
+    const uploadZone = document.getElementById('uploadZone');
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleFileSelect(file);
+    });
+
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) handleFileSelect(file);
+    });
+
+    function handleFileSelect(file) {
+      if (file.size > 5 * 1024 * 1024) { alert('File too large. Maximum 5MB.'); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        selectedFileData = e.target.result;
+        document.getElementById('filePreviewImg').src = selectedFileData;
+        document.getElementById('filePreview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ---- URL preview ----
+    document.getElementById('pImage').addEventListener('input', (e) => {
+      const url = e.target.value;
+      const preview = document.getElementById('urlPreview');
+      const img = document.getElementById('urlPreviewImg');
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        img.src = url;
+        preview.style.display = 'block';
+        img.onerror = () => { preview.style.display = 'none'; };
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+
+    // ---- Edit ----
+    window.editProject = (id) => {
+      const p = allProjects.find(x => x.id === id);
+      if (!p) return;
+      resetUploadForm();
+      document.getElementById('editId').value = id;
+      document.getElementById('pTitle').value = p.title || '';
+      document.getElementById('pDescription').value = p.description || '';
+      document.getElementById('pLocation').value = p.location || '';
+      document.getElementById('pStatus').value = p.status || 'Upcoming';
+
+      // Set date
+      if (p.date) {
+        const d = p.date.toDate ? p.date.toDate() : new Date(p.date);
+        document.getElementById('pDate').value = d.toISOString().split('T')[0];
+      }
+
+      // If existing image, show in URL mode
+      if (p.imageURL) {
+        uploadMode = 'url';
+        document.querySelectorAll('.upload-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector('.upload-tab[data-upload-mode="url"]').classList.add('active');
+        document.getElementById('uploadFileSection').style.display = 'none';
+        document.getElementById('uploadURLSection').style.display = 'block';
+        document.getElementById('pImage').value = p.imageURL;
+        document.getElementById('urlPreviewImg').src = p.imageURL;
+        document.getElementById('urlPreview').style.display = 'block';
+      }
+
+      document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen" style="color:var(--yellow-500);"></i> Edit Project';
+      openModal();
+    };
+
+    // ---- Delete ----
+    window.removeProject = async (id, title) => {
+      if (!confirm(`Delete project "${title}"?`)) return;
+      await deleteEvent(id);
+      loadProjects();
+    };
+
+    // ---- Save (Add/Update) ----
+    document.getElementById('projectForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;margin:0;border-width:2px;"></div> Saving...';
+
+      let imageURL = '';
+      if (uploadMode === 'file' && selectedFileData) {
+        imageURL = selectedFileData;
+      } else if (uploadMode === 'url') {
+        imageURL = document.getElementById('pImage').value || '';
+      }
+
+      const data = {
+        title: document.getElementById('pTitle').value,
+        description: document.getElementById('pDescription').value,
+        date: document.getElementById('pDate').value,
+        location: document.getElementById('pLocation').value,
+        status: document.getElementById('pStatus').value,
+        imageURL: imageURL
+      };
+
+      const editId = document.getElementById('editId').value;
+      if (editId) {
+        await updateEvent(editId, data);
+      } else {
+        await addEvent(data);
+      }
+
+      closeModal();
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-save"></i> Save Project';
+      loadProjects();
+    });
+
+    // ---- Sidebar & Logout ----
+    document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); logoutUser(); });
+    document.getElementById('sidebarToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+  </script>
+
+</body>
+</html>

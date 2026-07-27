@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | Lions Diamond Homagama</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="../assets/img/logo.png" type="image/png">
+</head>
+<body>
+
+  <div class="login-page">
+    <!-- Floating particles for ambient effect -->
+    <div class="hero-particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="login-card" style="animation: fadeInUp 0.8s ease forwards;">
+      <img src="../assets/img/logo.png" alt="Lions Diamond Homagama">
+
+      <!-- Tab Toggle: Sign In / Create Account -->
+      <div style="display: flex; gap: 0; margin-bottom: var(--space-xl); border-radius: var(--radius-full); overflow: hidden; border: 2px solid var(--gray-200);">
+        <button type="button" class="tab-btn active" id="tabSignIn" style="flex: 1; padding: var(--space-sm) var(--space-md); border: none; background: var(--blue-600); color: white; font-family: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+        <button type="button" class="tab-btn" id="tabRegister" style="flex: 1; padding: var(--space-sm) var(--space-md); border: none; background: var(--white); color: var(--gray-500); font-family: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease;">
+          <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+      </div>
+
+      <!-- Sign In Title -->
+      <div id="signInHeader">
+        <h2>Welcome Back</h2>
+        <p>Sign in to access the admin dashboard</p>
+      </div>
+
+      <!-- Create Account Title -->
+      <div id="registerHeader" style="display: none;">
+        <h2>Create Admin Account</h2>
+        <p>Set up your credentials to manage the dashboard</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email</label>
+          <input type="email" class="form-control" id="loginEmail" placeholder="admin@lionsdiamond.lk" required>
+        </div>
+        <div class="form-group" style="position: relative;">
+          <label><i class="fa-solid fa-lock"></i> Password</label>
+          <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required minlength="6">
+          <button type="button" id="togglePassword" style="position: absolute; right: 14px; top: 42px; background: none; border: none; cursor: pointer; color: var(--gray-400); font-size: 1rem;">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+
+        <!-- Confirm Password (only for register) -->
+        <div class="form-group" id="confirmPasswordGroup" style="display: none; position: relative;">
+          <label><i class="fa-solid fa-lock"></i> Confirm Password</label>
+          <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter your password">
+        </div>
+
+        <!-- Error Message -->
+        <div id="loginError" style="display: none; background: rgba(239,68,68,0.1); color: var(--danger); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-lg); font-size: 0.9rem; text-align: left;">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorText"></span>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMsg" style="display: none; background: rgba(16,185,129,0.1); color: var(--success); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-lg); font-size: 0.9rem; text-align: left;">
+          <i class="fa-solid fa-circle-check"></i> <span id="successText"></span>
+        </div>
+
+        <button type="submit" class="btn btn-blue" id="loginBtn" style="width: 100%; justify-content: center;">
+          <i class="fa-solid fa-right-to-bracket"></i> <span id="btnText">Sign In</span>
+        </button>
+      </form>
+
+      <div style="margin-top: var(--space-xl); padding-top: var(--space-md); border-top: 1px solid var(--gray-200);">
+        <a href="../index.html" style="color: var(--gray-500); font-size: 0.85rem;"><i class="fa-solid fa-arrow-left"></i> Back to Website</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { loginUser, registerUser, redirectIfLoggedIn } from '../js/auth.js';
+
+    // Redirect if already logged in
+    redirectIfLoggedIn();
+
+    // ---- State ----
+    let isRegisterMode = false;
+
+    // ---- Tab Toggle ----
+    const tabSignIn = document.getElementById('tabSignIn');
+    const tabRegister = document.getElementById('tabRegister');
+    const signInHeader = document.getElementById('signInHeader');
+    const registerHeader = document.getElementById('registerHeader');
+    const confirmGroup = document.getElementById('confirmPasswordGroup');
+    const confirmInput = document.getElementById('confirmPassword');
+    const btnText = document.getElementById('btnText');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorDiv = document.getElementById('loginError');
+    const successDiv = document.getElementById('successMsg');
+
+    function switchToSignIn() {
+      isRegisterMode = false;
+      tabSignIn.style.background = 'var(--blue-600)';
+      tabSignIn.style.color = 'white';
+      tabRegister.style.background = 'var(--white)';
+      tabRegister.style.color = 'var(--gray-500)';
+      signInHeader.style.display = 'block';
+      registerHeader.style.display = 'none';
+      confirmGroup.style.display = 'none';
+      confirmInput.required = false;
+      btnText.textContent = 'Sign In';
+      loginBtn.querySelector('i').className = 'fa-solid fa-right-to-bracket';
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+    }
+
+    function switchToRegister() {
+      isRegisterMode = true;
+      tabRegister.style.background = 'var(--purple-600)';
+      tabRegister.style.color = 'white';
+      tabSignIn.style.background = 'var(--white)';
+      tabSignIn.style.color = 'var(--gray-500)';
+      signInHeader.style.display = 'none';
+      registerHeader.style.display = 'block';
+      confirmGroup.style.display = 'block';
+      confirmInput.required = true;
+      btnText.textContent = 'Create Account';
+      loginBtn.querySelector('i').className = 'fa-solid fa-user-plus';
+      loginBtn.className = 'btn btn-purple';
+      loginBtn.style.width = '100%';
+      loginBtn.style.justifyContent = 'center';
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+    }
+
+    tabSignIn.addEventListener('click', () => {
+      switchToSignIn();
+      loginBtn.className = 'btn btn-blue';
+      loginBtn.style.width = '100%';
+      loginBtn.style.justifyContent = 'center';
+    });
+
+    tabRegister.addEventListener('click', switchToRegister);
+
+    // ---- Toggle Password Visibility ----
+    document.getElementById('togglePassword').addEventListener('click', () => {
+      const pwInput = document.getElementById('loginPassword');
+      const icon = document.querySelector('#togglePassword i');
+      if (pwInput.type === 'password') {
+        pwInput.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        pwInput.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    });
+
+    // ---- Form Submit ----
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const errorText = document.getElementById('errorText');
+      const successText = document.getElementById('successText');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      // ---- REGISTER MODE ----
+      if (isRegisterMode) {
+        const confirm = document.getElementById('confirmPassword').value;
+
+        if (password !== confirm) {
+          errorText.textContent = 'Passwords do not match.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        if (password.length < 6) {
+          errorText.textContent = 'Password must be at least 6 characters.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        loginBtn.disabled = true;
+        btnText.textContent = 'Creating...';
+
+        const result = await registerUser(email, password);
+
+        if (result.success) {
+          successText.textContent = 'Account created successfully! Redirecting to dashboard...';
+          successDiv.style.display = 'block';
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+          return;
+        } else {
+          errorText.textContent = result.message;
+          errorDiv.style.display = 'block';
+          loginBtn.disabled = false;
+          btnText.textContent = 'Create Account';
+        }
+        return;
+      }
+
+      // ---- SIGN IN MODE ----
+      loginBtn.disabled = true;
+      btnText.textContent = 'Signing in...';
+
+      const result = await loginUser(email, password);
+
+      if (result.success) {
+        window.location.href = 'index.html';
+      } else {
+        errorText.textContent = result.message;
+        errorDiv.style.display = 'block';
+        loginBtn.disabled = false;
+        btnText.textContent = 'Sign In';
+      }
+    });
+  </script>
+
+</body>
+</html>

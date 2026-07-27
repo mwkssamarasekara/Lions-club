@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donations | Dashboard — Lions Diamond</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="../assets/img/logo.png" type="image/png">
+  <!-- PDF Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><img src="../assets/img/logo.png" alt="Logo"><span>Lions Diamond</span></div>
+      <nav class="sidebar-nav">
+        <a href="index.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="members.html"><i class="fa-solid fa-users"></i> Members</a>
+        <a href="projects.html"><i class="fa-solid fa-diagram-project"></i> Projects</a>
+        <a href="join-requests.html"><i class="fa-solid fa-user-plus"></i> Join Requests</a>
+        <a href="donations.html" class="active"><i class="fa-solid fa-hand-holding-dollar"></i> Donations</a>
+        <a href="gallery.html"><i class="fa-solid fa-images"></i> Gallery</a>
+        <div class="nav-divider"></div>
+        <a href="../index.html"><i class="fa-solid fa-globe"></i> View Website</a>
+        <a href="#" id="logoutBtn" style="color:rgba(239,68,68,0.8);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div style="display:flex;align-items:center;gap:var(--space-md);">
+          <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+          <h2><i class="fa-solid fa-hand-holding-dollar" style="color:var(--success);"></i> Donations</h2>
+        </div>
+        <button class="btn btn-sm btn-outline" id="downloadPdfBtn"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+      </header>
+
+      <div class="dashboard-content">
+        <!-- Summary Row -->
+        <div class="summary-grid" style="margin-bottom:var(--space-xl);">
+          <div class="summary-card green">
+            <div class="summary-card-icon"><i class="fa-solid fa-coins"></i></div>
+            <div class="summary-card-info">
+              <h3 id="totalAmount">—</h3>
+              <p>Total Amount</p>
+            </div>
+          </div>
+          <div class="summary-card blue">
+            <div class="summary-card-icon"><i class="fa-solid fa-receipt"></i></div>
+            <div class="summary-card-info">
+              <h3 id="totalCount">—</h3>
+              <p>Total Donations</p>
+            </div>
+          </div>
+          <div class="summary-card gold">
+            <div class="summary-card-icon"><i class="fa-solid fa-clock"></i></div>
+            <div class="summary-card-info">
+              <h3 id="pendingCount">—</h3>
+              <p>Pending</p>
+            </div>
+          </div>
+          <div class="summary-card purple">
+            <div class="summary-card-icon"><i class="fa-solid fa-check-double"></i></div>
+            <div class="summary-card-info">
+              <h3 id="paidCount">—</h3>
+              <p>Paid</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="filter-tabs" style="margin-bottom:0;">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="pending"><i class="fa-solid fa-clock"></i> Pending</button>
+            <button class="filter-tab" data-filter="paid"><i class="fa-solid fa-check"></i> Paid</button>
+          </div>
+          <div class="search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search donations...">
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Donor</th>
+                <th>Email</th>
+                <th>Amount</th>
+                <th>Purpose</th>
+                <th>Method</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="donationsBody">
+              <tr><td colspan="8" style="text-align:center;padding:var(--space-2xl);"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import { getDonations, updateDonationStatus, formatDate, formatCurrency } from '../js/firestore-db.js';
+
+    let allDonations = [];
+
+    function renderDonations(donations) {
+      const body = document.getElementById('donationsBody');
+
+      if (donations.length === 0) {
+        body.innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-hand-holding-dollar"></i><p>No donations found.</p></div></td></tr>';
+        return;
+      }
+
+      body.innerHTML = donations.map(d => `
+        <tr>
+          <td><strong>${d.fullName}</strong></td>
+          <td>${d.email || '—'}</td>
+          <td style="font-weight:700;color:var(--success);">${formatCurrency(d.amount || 0)}</td>
+          <td>${d.purpose || '—'}</td>
+          <td><span class="badge badge-upcoming">${d.paymentMethod || '—'}</span></td>
+          <td>${formatDate(d.submittedAt)}</td>
+          <td><span class="badge badge-${d.status}">${d.status}</span></td>
+          <td>
+            <div class="action-btns">
+              ${d.slipData ? `
+                <button class="action-btn edit" onclick="viewSlip('${d.id}')" title="View Slip"><i class="fa-solid fa-receipt"></i></button>
+              ` : ''}
+              ${d.status === 'pending' ? `
+                <button class="action-btn approve" onclick="markPaid('${d.id}')" title="Mark as Paid"><i class="fa-solid fa-check"></i></button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // View slip function (opens in new tab as PDF iframe or raw image)
+    window.viewSlip = (id) => {
+      const d = allDonations.find(x => x.id === id);
+      if (!d || !d.slipData) {
+        alert('No slip data found for this donation.');
+        return;
+      }
+      
+      const newTab = window.open();
+      if (!newTab) {
+        alert('Popup blocked. Please allow popups for this dashboard.');
+        return;
+      }
+
+      if (d.slipData.startsWith('data:application/pdf')) {
+        newTab.document.write(`
+          <html>
+            <head><title>Bank Slip - PDF</title></head>
+            <body style="margin:0;">
+              <iframe src="${d.slipData}" style="border:0; width:100%; height:100vh;"></iframe>
+            </body>
+          </html>
+        `);
+      } else {
+        newTab.document.write(`
+          <html>
+            <head><title>Bank Slip - Image</title></head>
+            <body style="margin:0; background:#0b1120; display:flex; align-items:center; justify-content:center; min-height:100vh;">
+              <img src="${d.slipData}" style="max-width:95%; max-height:95vh; object-fit:contain; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+            </body>
+          </html>
+        `);
+      }
+    }
+
+    function updateSummary() {
+      const total = allDonations.reduce((sum, d) => sum + (d.amount || 0), 0);
+      const pending = allDonations.filter(d => d.status === 'pending');
+      const paid = allDonations.filter(d => d.status === 'paid');
+
+      document.getElementById('totalAmount').textContent = formatCurrency(total);
+      document.getElementById('totalCount').textContent = allDonations.length;
+      document.getElementById('pendingCount').textContent = pending.length;
+      document.getElementById('paidCount').textContent = paid.length;
+    }
+
+    async function loadDonations() {
+      allDonations = await getDonations();
+      renderDonations(allDonations);
+      updateSummary();
+    }
+
+    requireAuth(() => loadDonations());
+
+    window.markPaid = async (id) => {
+      if (!confirm('Mark this donation as paid?')) return;
+      await updateDonationStatus(id, 'paid');
+      loadDonations();
+    };
+
+    // Download PDF Report
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Title & Header info
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.setTextColor(15, 35, 71); // Navy blue
+      doc.text("LIONS CLUB OF HOMAGAMA DIAMONDS", 14, 20);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.setTextColor(100, 110, 120);
+      doc.text("Donation Logs & Contributions Report", 14, 27);
+      
+      const totalAmountVal = allDonations.reduce((sum, d) => sum + (d.amount || 0), 0);
+      doc.text(`Generated on: ${new Date().toLocaleDateString('en-LK')} | Total Count: ${allDonations.length} | Total Amount: ${formatCurrency(totalAmountVal)}`, 14, 33);
+
+      // AutoTable data conversion
+      const tableHeaders = [["Donor Name", "Email", "Amount", "Purpose", "Method", "Date", "Status"]];
+      const tableRows = allDonations.map(d => [
+        d.fullName || '—',
+        d.email || '—',
+        formatCurrency(d.amount || 0),
+        d.purpose || '—',
+        d.paymentMethod || '—',
+        formatDate(d.submittedAt),
+        d.status || 'pending'
+      ]);
+
+      doc.autoTable({
+        startY: 38,
+        head: tableHeaders,
+        body: tableRows,
+        theme: 'striped',
+        headStyles: { fillColor: [15, 35, 71], textContrast: 1 },
+        styles: { font: "helvetica", fontSize: 9 },
+        margin: { top: 35 }
+      });
+
+      doc.save(`Lions_Homagama_Donations_${new Date().toISOString().split('T')[0]}.pdf`);
+    });
+
+    // Filter
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const f = tab.dataset.filter;
+        renderDonations(f === 'all' ? allDonations : allDonations.filter(d => d.status === f));
+      });
+    });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      renderDonations(allDonations.filter(d =>
+        d.fullName?.toLowerCase().includes(q) ||
+        d.email?.toLowerCase().includes(q) ||
+        d.purpose?.toLowerCase().includes(q)
+      ));
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); logoutUser(); });
+    document.getElementById('sidebarToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+  </script>
+
+</body>
+</html>
