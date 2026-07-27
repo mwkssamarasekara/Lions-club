@@ -74,7 +74,8 @@ export default function Navbar() {
 
         <div className="nav-actions">
           <button className="theme-toggle" id="themeToggle" onClick={toggleTheme} aria-label="Toggle dark mode">
-            <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+            <i className="fa-solid fa-sun"></i>
+            <i className="fa-solid fa-moon"></i>
           </button>
           <Link href="/dashboard" className="nav-profile" aria-label="Login / Profile">
             <i className="fa-solid fa-user"></i>

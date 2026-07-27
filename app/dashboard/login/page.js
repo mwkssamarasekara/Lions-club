@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { loginUser, onAuthStateChanged } from '@/lib/auth';
 import { showToast } from '@/lib/firestore-db';
 
@@ -75,6 +76,11 @@ export default function Login() {
               </>
             )}
           </button>
+          <div style={{ textAlign: 'center', marginTop: 'var(--space-md)' }}>
+            <Link href="/" style={{ color: 'var(--blue-600)', fontSize: '0.9rem', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: 'var(--space-xs)', textDecoration: 'none' }}>
+              <i className="fa-solid fa-arrow-left"></i> Visit Website
+            </Link>
+          </div>
         </form>
       </div>
     </div>

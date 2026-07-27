@@ -43,7 +43,7 @@ export default function Footer() {
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} Lions Diamond Homagama. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Zettachyper. All rights reserved.</p>
         </div>
       </div>
     </footer>
