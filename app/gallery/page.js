@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getGalleryImages } from '@/lib/firestore-db';
+import { getGalleryImages, getGalleryCategories } from '@/lib/firestore-db';
 
 export default function Gallery() {
   const [images, setImages] = useState([]);
   const [filteredImages, setFilteredImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState('All');
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState(null);
@@ -14,9 +15,13 @@ export default function Gallery() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await getGalleryImages();
-        setImages(data);
-        setFilteredImages(data);
+        const [imagesData, categoriesData] = await Promise.all([
+          getGalleryImages(),
+          getGalleryCategories()
+        ]);
+        setImages(imagesData);
+        setFilteredImages(imagesData);
+        setCategories(categoriesData);
       } catch (e) {
         console.error(e);
       } finally {
@@ -35,7 +40,7 @@ export default function Gallery() {
     }
   };
 
-  const categories = ['All', 'Service', 'Education', 'Health', 'Donations', 'Meetings'];
+  const filterTabs = ['All', ...categories.map(c => c.name)];
 
   return (
     <>
@@ -56,7 +61,7 @@ export default function Gallery() {
           {/* Category Filter Tabs */}
           <div className="toolbar" style={{ justifyContent: 'center', marginBottom: 'var(--space-2xl)' }}>
             <div className="filter-tabs" style={{ marginBottom: 0 }}>
-              {categories.map(cat => (
+              {filterTabs.map(cat => (
                 <button 
                   key={cat}
                   className={`filter-tab ${category === cat ? 'active' : ''}`}

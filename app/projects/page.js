@@ -67,6 +67,12 @@ export default function Projects() {
                 <i className="fa-solid fa-calendar-day"></i> Upcoming
               </button>
               <button 
+                className={`filter-tab ${filter === 'Ongoing' ? 'active' : ''}`} 
+                onClick={() => handleFilter('Ongoing')}
+              >
+                <i className="fa-solid fa-spinner"></i> Ongoing
+              </button>
+              <button 
                 className={`filter-tab ${filter === 'Completed' ? 'active' : ''}`} 
                 onClick={() => handleFilter('Completed')}
               >
@@ -91,7 +97,7 @@ export default function Projects() {
                 <div className="card fade-in-card" data-aos="fade-up" data-aos-delay={(i % 3) * 100} key={p.id}>
                   <div className="card-img-wrapper" onClick={() => setSelectedProject(p)} style={{ cursor: 'pointer' }}>
                     <img className="card-img" src={p.imageURL || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600'} alt={p.title} />
-                    <span className={`card-badge ${p.status === 'Upcoming' ? 'upcoming' : 'completed'}`}>{p.status}</span>
+                    <span className={`card-badge ${(p.status || 'Upcoming').toLowerCase()}`}>{p.status}</span>
                   </div>
                   <div className="card-body">
                     <h3 onClick={() => setSelectedProject(p)} style={{ cursor: 'pointer', transition: 'color var(--transition-fast)' }} className="project-card-title">{p.title}</h3>
@@ -120,7 +126,7 @@ export default function Projects() {
                 <img src={selectedProject.imageURL || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600'} alt={selectedProject.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <div style={{ padding: 'var(--space-xl)', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'var(--white)' }}>
-                <span className={`badge badge-${selectedProject.status === 'Upcoming' ? 'upcoming' : 'completed'}`} style={{ alignSelf: 'flex-start', marginBottom: 'var(--space-sm)' }}>{selectedProject.status}</span>
+                <span className={`badge badge-${(selectedProject.status || 'Upcoming').toLowerCase()}`} style={{ alignSelf: 'flex-start', marginBottom: 'var(--space-sm)' }}>{selectedProject.status}</span>
                 <h2 style={{ fontSize: '1.6rem', color: 'var(--blue-900)', marginBottom: 'var(--space-sm)' }}>{selectedProject.title}</h2>
                 <div className="card-meta" style={{ display: 'flex', gap: 'var(--space-md)', color: 'var(--gray-500)', fontSize: '0.85rem', marginBottom: 'var(--space-md)', borderBottom: '1px solid var(--gray-100)', paddingBottom: 'var(--space-sm)' }}>
                   <span><i className="fa-regular fa-calendar"></i> {formatDate(selectedProject.date)}</span>

@@ -159,6 +159,7 @@ export default function ProjectsDashboard() {
 
   // Card summary numbers
   const upcomingCount = projects.filter(p => p.status === 'Upcoming').length;
+  const ongoingCount = projects.filter(p => p.status === 'Ongoing').length;
   const completedCount = projects.filter(p => p.status === 'Completed').length;
 
   return (
@@ -184,6 +185,13 @@ export default function ProjectsDashboard() {
             <p>Upcoming</p>
           </div>
         </div>
+        <div className="summary-card purple">
+          <div className="summary-card-icon"><i className="fa-solid fa-spinner"></i></div>
+          <div className="summary-card-info">
+            <h3>{loading ? '—' : ongoingCount}</h3>
+            <p>Ongoing</p>
+          </div>
+        </div>
         <div className="summary-card green">
           <div className="summary-card-icon"><i className="fa-solid fa-check-double"></i></div>
           <div className="summary-card-info">
@@ -197,6 +205,7 @@ export default function ProjectsDashboard() {
         <div className="filter-tabs" style={{ marginBottom: 0 }}>
           <button className={`filter-tab ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>All</button>
           <button className={`filter-tab ${filter === 'Upcoming' ? 'active' : ''}`} onClick={() => setFilter('Upcoming')}><i className="fa-solid fa-clock"></i> Upcoming</button>
+          <button className={`filter-tab ${filter === 'Ongoing' ? 'active' : ''}`} onClick={() => setFilter('Ongoing')}><i className="fa-solid fa-spinner"></i> Ongoing</button>
           <button className={`filter-tab ${filter === 'Completed' ? 'active' : ''}`} onClick={() => setFilter('Completed')}><i className="fa-solid fa-check"></i> Completed</button>
         </div>
         <div className="search-bar">
@@ -256,7 +265,7 @@ export default function ProjectsDashboard() {
                   <td>{formatDate(p.date)}</td>
                   <td>{p.location || '—'}</td>
                   <td>
-                    <span className={`badge badge-${p.status === 'Upcoming' ? 'upcoming' : 'completed'}`}>
+                    <span className={`badge badge-${(p.status || 'Upcoming').toLowerCase()}`}>
                       {p.status || 'Upcoming'}
                     </span>
                   </td>
@@ -338,6 +347,7 @@ export default function ProjectsDashboard() {
                   required
                 >
                   <option value="Upcoming">Upcoming</option>
+                  <option value="Ongoing">Ongoing</option>
                   <option value="Completed">Completed</option>
                 </select>
               </div>

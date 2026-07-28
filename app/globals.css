@@ -1106,6 +1106,11 @@ p { margin-bottom: var(--space-md); }
   color: var(--white);
 }
 
+.card-badge.ongoing {
+  background: var(--purple-600);
+  color: var(--white);
+}
+
 .card-badge.completed {
   background: var(--success);
   color: var(--white);
@@ -1588,6 +1593,11 @@ select.form-control {
 .badge-upcoming {
   background: var(--blue-100);
   color: var(--blue-700);
+}
+
+.badge-ongoing {
+  background: var(--purple-100);
+  color: var(--purple-700);
 }
 
 .badge-completed {

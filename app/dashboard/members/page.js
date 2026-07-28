@@ -315,22 +315,26 @@ export default function MembersDashboard() {
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-briefcase"></i> Position / Role</label>
-                <select 
+                <input 
+                  type="text" 
                   className="form-control" 
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
-                  required
-                >
-                  <option value="Member">Member</option>
-                  <option value="President">President</option>
-                  <option value="Secretary">Secretary</option>
-                  <option value="Treasurer">Treasurer</option>
-                  <option value="Vice President">Vice President</option>
-                  <option value="Director">Director</option>
-                  <option value="Coordinator">Coordinator</option>
-                  <option value="Social Administrator">Social Administrator</option>
-                  <option value="Chief Coordinator">Chief Coordinator</option>
-                </select>
+                  placeholder="Type or select a position..." 
+                  list="positions-list"
+                  required 
+                />
+                <datalist id="positions-list">
+                  <option value="Member" />
+                  <option value="President" />
+                  <option value="Secretary" />
+                  <option value="Treasurer" />
+                  <option value="Vice President" />
+                  <option value="Director" />
+                  <option value="Coordinator" />
+                  <option value="Social Administrator" />
+                  <option value="Chief Coordinator" />
+                </datalist>
               </div>
 
               {/* Upload Tabs */}

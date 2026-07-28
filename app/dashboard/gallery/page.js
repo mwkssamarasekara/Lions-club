@@ -4,17 +4,21 @@ import { useState, useEffect } from 'react';
 import { 
   getGalleryImages, 
   addGalleryImage, 
-  deleteGalleryImage 
+  deleteGalleryImage,
+  getGalleryCategories,
+  addGalleryCategory,
+  deleteGalleryCategory
 } from '@/lib/firestore-db';
 
 export default function GalleryDashboard() {
   const [images, setImages] = useState([]);
   const [filteredImages, setFilteredImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(true);
 
-  // Modal State
+  // Upload Modal State
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Service');
@@ -24,6 +28,11 @@ export default function GalleryDashboard() {
   const [dragOver, setDragOver] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  // Manage Categories Modal State
+  const [isCatOpen, setIsCatOpen] = useState(false);
+  const [newCatName, setNewCatName] = useState('');
+  const [catSaving, setCatSaving] = useState(false);
+
   useEffect(() => {
     loadData();
   }, []);
@@ -31,9 +40,17 @@ export default function GalleryDashboard() {
   async function loadData() {
     setLoading(true);
     try {
-      const data = await getGalleryImages();
-      setImages(data);
-      setFilteredImages(data);
+      const [imagesData, categoriesData] = await Promise.all([
+        getGalleryImages(),
+        getGalleryCategories()
+      ]);
+      setImages(imagesData);
+      setFilteredImages(imagesData);
+      setCategories(categoriesData);
+      
+      if (categoriesData.length > 0) {
+        setCategory(categoriesData[0].name);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -58,7 +75,11 @@ export default function GalleryDashboard() {
 
   const handleAddOpen = () => {
     setTitle('');
-    setCategory('Service');
+    if (categories.length > 0) {
+      setCategory(categories[0].name);
+    } else {
+      setCategory('Service');
+    }
     setImageURL('');
     setSelectedFileData(null);
     setUploadMode('file');
@@ -117,18 +138,53 @@ export default function GalleryDashboard() {
     }
   };
 
-  const categories = ['All', 'Service', 'Education', 'Health', 'Donations', 'Meetings'];
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    if (!newCatName.trim()) return;
+    setCatSaving(true);
+    try {
+      const added = await addGalleryCategory(newCatName.trim());
+      if (added) {
+        setCategories([...categories, added]);
+        setNewCatName('');
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCatSaving(false);
+    }
+  };
+
+  const handleDeleteCategory = async (id, name) => {
+    if (!confirm(`Delete category "${name}"? Images tagged under this category will not be deleted but won't be filtered by it.`)) return;
+    try {
+      const success = await deleteGalleryCategory(id);
+      if (success) {
+        setCategories(categories.filter(c => c.id !== id));
+        if (filter === name) {
+          setFilter('All');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const filterTabs = ['All', ...categories.map(c => c.name)];
 
   return (
     <div className="dashboard-content">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-xl)' }}>
         <h2 style={{ margin: 0 }}><i className="fa-solid fa-images" style={{ color: 'var(--blue-600)' }}></i> Gallery</h2>
-        <button className="btn btn-sm btn-primary" onClick={handleAddOpen}><i className="fa-solid fa-plus"></i> Upload Image</button>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
+          <button className="btn btn-sm btn-outline" onClick={() => setIsCatOpen(true)}><i className="fa-solid fa-tags"></i> Manage Categories</button>
+          <button className="btn btn-sm btn-primary" onClick={handleAddOpen}><i className="fa-solid fa-plus"></i> Upload Image</button>
+        </div>
       </div>
 
       <div className="toolbar">
         <div className="filter-tabs" style={{ marginBottom: 0 }}>
-          {categories.map(cat => (
+          {filterTabs.map(cat => (
             <button 
               key={cat}
               className={`filter-tab ${filter === cat ? 'active' : ''}`}
@@ -216,7 +272,7 @@ export default function GalleryDashboard() {
         </div>
       )}
 
-      {/* Modal Dialog */}
+      {/* Upload Modal */}
       {isOpen && (
         <div className="modal-overlay active" onClick={() => setIsOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -245,11 +301,9 @@ export default function GalleryDashboard() {
                   onChange={(e) => setCategory(e.target.value)}
                   required
                 >
-                  <option value="Service">Service</option>
-                  <option value="Education">Education</option>
-                  <option value="Health">Health</option>
-                  <option value="Donations">Donations</option>
-                  <option value="Meetings">Meetings</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
                 </select>
               </div>
 
@@ -333,6 +387,74 @@ export default function GalleryDashboard() {
                     <i className="fa-solid fa-upload"></i> Upload Image
                   </>
                 )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Category Management Modal */}
+      {isCatOpen && (
+        <div className="modal-overlay active" onClick={() => setIsCatOpen(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div className="modal-header">
+              <h3><i className="fa-solid fa-tags" style={{ color: 'var(--blue-600)' }}></i> Manage Categories</h3>
+              <button className="modal-close" onClick={() => setIsCatOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+
+            {/* List of categories */}
+            <div style={{ maxHeight: '250px', overflowY: 'auto', marginBottom: 'var(--space-lg)', paddingRight: '5px' }}>
+              {categories.length === 0 ? (
+                <p style={{ color: 'var(--gray-400)', textAlign: 'center', fontSize: '0.9rem' }}>No categories found.</p>
+              ) : (
+                categories.map(cat => (
+                  <div 
+                    key={cat.id} 
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: 'var(--space-sm) var(--space-md)',
+                      background: 'var(--gray-50)',
+                      borderRadius: 'var(--radius-sm)',
+                      marginBottom: 'var(--space-xs)',
+                      border: '1px solid var(--gray-100)'
+                    }}
+                  >
+                    <span style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--gray-800)' }}>{cat.name}</span>
+                    <button 
+                      onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--danger)',
+                        cursor: 'pointer',
+                        padding: 'var(--space-xs)'
+                      }}
+                      title="Delete Category"
+                    >
+                      <i className="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Add Category Form */}
+            <form onSubmit={handleAddCategory} style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 'var(--space-lg)' }}>
+              <div className="form-group" style={{ marginBottom: 'var(--space-md)' }}>
+                <label>Add New Category</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  placeholder="e.g. Celebrations" 
+                  value={newCatName}
+                  onChange={(e) => setNewCatName(e.target.value)}
+                  required 
+                />
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={catSaving}>
+                {catSaving ? 'Saving...' : 'Add Category'}
               </button>
             </form>
           </div>
