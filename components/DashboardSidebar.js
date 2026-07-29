@@ -42,7 +42,7 @@ export default function DashboardSidebar() {
       <aside className={`sidebar ${mobileOpen ? 'open' : ''}`} id="sidebar">
         <div className="sidebar-brand">
           <img src="/assets/img/logo.png" alt="Logo" />
-          <span>Lions Diamond</span>
+          <span>Lions Diamonds</span>
         </div>
         <nav className="sidebar-nav">
           {navItems.map(item => {

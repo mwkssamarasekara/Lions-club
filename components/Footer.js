@@ -6,8 +6,8 @@ export default function Footer() {
       <div className="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <img src="/assets/img/logo.png" alt="Lions Diamond Homagama" />
-            <p>Lions Diamond Homagama is committed to serving the community through volunteer programs, charitable donations, and impactful projects.</p>
+            <img src="/assets/img/logo.png" alt="Lions Diamonds Homagama" />
+            <p>Lions Diamonds Homagama is committed to serving the community through volunteer programs, charitable donations, and impactful projects.</p>
             <div class="footer-social">
               <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
               <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
@@ -36,9 +36,9 @@ export default function Footer() {
           <div>
             <h4>Contact Us</h4>
             <div class="footer-links">
-              <a href="tel:+94771234567"><i class="fa-solid fa-phone"></i> +94 77 123 4567</a>
-              <a href="mailto:info@lionsdiamond.lk"><i class="fa-solid fa-envelope"></i> info@lionsdiamond.lk</a>
-              <a href="#"><i class="fa-solid fa-location-dot"></i> Homagama, Sri Lanka</a>
+              <a href="tel:+94771234567"><i class="fa-solid fa-phone"></i> +94 77 671 9921</a>
+              <a href="mailto:lionsdiamondshomagama@gmail.com"><i class="fa-solid fa-envelope"></i> lionsdiamondshomagama@gmail.com</a>
+              <a href="#"><i class="fa-solid fa-location-dot"></i>119/1,Gogadama, Homagama, Sri Lanka</a>
             </div>
           </div>
         </div>

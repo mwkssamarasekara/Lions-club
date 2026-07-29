@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { incrementViewCount } from '@/lib/firestore-db';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -26,6 +27,13 @@ export default function Navbar() {
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
+  // Track page views
+  useEffect(() => {
+    if (pathname && !pathname.startsWith('/dashboard')) {
+      incrementViewCount(pathname);
+    }
+  }, [pathname]);
+
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
@@ -46,7 +54,7 @@ export default function Navbar() {
       <div className="container">
         <Link href="/" className="navbar-brand">
           <img src="/assets/img/logo.png" alt="Logo" />
-          <span>Lions Diamond</span>
+          <span>Lions Diamonds</span>
         </Link>
         
         <div className={`nav-links ${mobileOpen ? 'open' : ''}`} id="navLinks">

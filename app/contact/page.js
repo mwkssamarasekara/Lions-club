@@ -47,7 +47,7 @@ export default function Contact() {
               <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-xl)' }}>
                 We're always here to listen, help, and collaborate. Reach out to us through any of the channels below or fill out the contact form.
               </p>
-              
+
               <ul className="contact-info-list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 <li style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'center', padding: 'var(--space-md) 0', borderBottom: '1px solid var(--gray-100)' }}>
                   <div className="icon-circle" style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--blue-600)' }}>
@@ -55,7 +55,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <strong style={{ display: 'block', fontSize: '0.75rem', color: 'var(--gray-400)', textTransform: 'uppercase' }}>Phone</strong>
-                    <a href="tel:+94771234567" style={{ fontWeight: '600', color: 'var(--gray-700)' }}>+94 77 123 4567</a>
+                    <a href="tel:+94771234567" style={{ fontWeight: '600', color: 'var(--gray-700)' }}>+94 77 671 9921</a>
                   </div>
                 </li>
                 <li style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'center', padding: 'var(--space-md) 0', borderBottom: '1px solid var(--gray-100)' }}>
@@ -64,7 +64,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <strong style={{ display: 'block', fontSize: '0.75rem', color: 'var(--gray-400)', textTransform: 'uppercase' }}>Email</strong>
-                    <a href="mailto:info@lionsdiamond.lk" style={{ fontWeight: '600', color: 'var(--gray-700)' }}>info@lionsdiamond.lk</a>
+                    <a href="mailto:info@lionsdiamond.lk" style={{ fontWeight: '600', color: 'var(--gray-700)' }}>lionsdiamondshomagama@gmail.com</a>
                   </div>
                 </li>
                 <li style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'center', padding: 'var(--space-md) 0', borderBottom: '1px solid var(--gray-100)' }}>
@@ -73,7 +73,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <strong style={{ display: 'block', fontSize: '0.75rem', color: 'var(--gray-400)', textTransform: 'uppercase' }}>Location</strong>
-                    <span style={{ fontWeight: '600', color: 'var(--gray-700)' }}>Homagama, Sri Lanka</span>
+                    <span style={{ fontWeight: '600', color: 'var(--gray-700)' }}>119/1, Gogadama, Homagama, Sri Lanka</span>
                   </div>
                 </li>
               </ul>
@@ -84,43 +84,43 @@ export default function Contact() {
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label><i className="fa-solid fa-user"></i> Name</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Your name" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    required 
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label><i className="fa-solid fa-envelope"></i> Email</label>
-                  <input 
-                    type="email" 
-                    className="form-control" 
-                    placeholder="your@email.com" 
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required 
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label><i className="fa-solid fa-heading"></i> Subject</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Subject of your message" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Subject of your message"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    required 
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label><i className="fa-solid fa-message"></i> Message</label>
-                  <textarea 
-                    className="form-control" 
-                    placeholder="Type your message here..." 
-                    rows="4" 
+                  <textarea
+                    className="form-control"
+                    placeholder="Type your message here..."
+                    rows="4"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     required

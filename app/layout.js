@@ -20,8 +20,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="si" data-theme="light">
       <head>
-        <title>Lions Diamond Homagama | Community Service Excellence</title>
-        <meta name="description" content="Lions Diamond Homagama - Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs." />
+        <title>Lions Diamonds Homagama | Community Service Excellence</title>
+        <meta name="description" content="Lions Diamonds Homagama - Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs." />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />

@@ -9,7 +9,7 @@ import {
   formatDate 
 } from '@/lib/firestore-db';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 export default function MembersDashboard() {
   const [members, setMembers] = useState([]);
@@ -172,7 +172,7 @@ export default function MembersDashboard() {
       formatDate(m.joinedDate)
     ]);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 38,
       head: tableHeaders,
       body: tableRows,

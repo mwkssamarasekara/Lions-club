@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { 
   getDonations, 
   updateDonationStatus, 
+  deleteDonation,
   formatDate, 
   formatCurrency 
 } from '@/lib/firestore-db';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 export default function DonationsDashboard() {
   const [donations, setDonations] = useState([]);
@@ -16,6 +17,7 @@ export default function DonationsDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [selectedSlip, setSelectedSlip] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -56,37 +58,18 @@ export default function DonationsDashboard() {
     loadData();
   };
 
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this donation record permanently?')) return;
+    await deleteDonation(id);
+    loadData();
+  };
+
   const handleViewSlip = (d) => {
     if (!d.slipData) {
       alert('No slip data found for this donation.');
       return;
     }
-    
-    const newTab = window.open();
-    if (!newTab) {
-      alert('Popup blocked. Please allow popups for this dashboard.');
-      return;
-    }
-
-    if (d.slipData.startsWith('data:application/pdf')) {
-      newTab.document.write(`
-        <html>
-          <head><title>Bank Slip - PDF</title></head>
-          <body style="margin:0;">
-            <iframe src="${d.slipData}" style="border:0; width:100%; height:100vh;"></iframe>
-          </body>
-        </html>
-      `);
-    } else {
-      newTab.document.write(`
-        <html>
-          <head><title>Bank Slip - Image</title></head>
-          <body style="margin:0; background:#0b1120; display:flex; align-items:center; justify-content:center; min-height:100vh;">
-            <img src="${d.slipData}" style="max-width:95%; max-height:95vh; object-fit:contain; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-          </body>
-        </html>
-      `);
-    }
+    setSelectedSlip(d.slipData);
   };
 
   const downloadPdf = () => {
@@ -116,7 +99,7 @@ export default function DonationsDashboard() {
       d.status || 'pending'
     ]);
 
-    doc.autoTable({
+    autoTable(doc, {
       startY: 38,
       head: tableHeaders,
       body: tableRows,
@@ -238,6 +221,7 @@ export default function DonationsDashboard() {
                       {d.status === 'pending' && (
                         <button className="action-btn approve" onClick={() => handleMarkPaid(d.id)} title="Mark as Paid"><i className="fa-solid fa-check"></i></button>
                       )}
+                      <button className="action-btn delete" onClick={() => handleDelete(d.id)} title="Delete"><i className="fa-solid fa-trash"></i></button>
                     </div>
                   </td>
                 </tr>
@@ -246,6 +230,28 @@ export default function DonationsDashboard() {
           </tbody>
         </table>
       </div>
+
+      {/* Bank Slip Modal Overlay */}
+      {selectedSlip && (
+        <div className="modal-overlay active" onClick={() => setSelectedSlip(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', width: '90%', borderRadius: 'var(--radius-xl)', overflow: 'hidden', padding: 0 }}>
+            <div className="modal-header" style={{ padding: 'var(--space-md) var(--space-lg)', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--white)' }}>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <i className="fa-solid fa-receipt" style={{ color: 'var(--blue-600)' }}></i>
+                Bank Transfer Slip
+              </h3>
+              <button className="modal-close" onClick={() => setSelectedSlip(null)} style={{ background: 'none', border: 'none', fontSize: '1.25rem', cursor: 'pointer', color: 'var(--gray-400)' }}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style={{ padding: 'var(--space-lg)', background: 'var(--gray-50)', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', maxHeight: '70vh' }}>
+              {selectedSlip.startsWith('data:application/pdf') ? (
+                <iframe src={selectedSlip} style={{ border: 0, width: '100%', height: '500px', borderRadius: 'var(--radius-md)' }}></iframe>
+              ) : (
+                <img src={selectedSlip} alt="Bank Slip" style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-md)' }} />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

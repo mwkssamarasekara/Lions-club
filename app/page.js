@@ -27,7 +27,7 @@ export default function Home() {
 
   // Animate counters when visible
   useEffect(() => {
-    const targets = { members: 50, projects: 120, years: 15, families: 500 };
+    const targets = { members: 47, projects: 120, years: 15, families: 500 };
     let observer;
 
     const animate = () => {
@@ -89,7 +89,7 @@ export default function Home() {
             <i className="fa-solid fa-diamond"></i>
             Lions International | District 306 D7 | CLUB NO:117049 | REGION 05 - ZONE 01
           </div>
-          <h1>Empowering <span className="text-gradient">Homagama</span> Through Service</h1>
+          <h1>Empowering <span className="text-gradient">Homagama Diamonds</span> Through Service</h1>
           <p>We serve with compassion, unity, and dedication. Together, we build a brighter future for our community — one act of kindness at a time.</p>
           <div className="hero-buttons">
             <Link href="/join" className="btn btn-primary"><i className="fa-solid fa-users"></i> Join Us</Link>

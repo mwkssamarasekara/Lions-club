@@ -126,56 +126,56 @@ export default function Donate() {
               <form id="donateForm" onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label><i className="fa-solid fa-user"></i> Full Name</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Enter your full name" 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter your full name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    required 
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label><i className="fa-solid fa-envelope"></i> Email</label>
-                  <input 
-                    type="email" 
-                    className="form-control" 
-                    placeholder="your@email.com" 
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required 
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label><i className="fa-solid fa-phone"></i> Phone</label>
-                  <input 
-                    type="tel" 
-                    className="form-control" 
-                    placeholder="+94 7X XXX XXXX" 
+                  <input
+                    type="tel"
+                    className="form-control"
+                    placeholder="+94 7X XXX XXXX"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    required 
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label><i className="fa-solid fa-money-bill"></i> Amount (LKR)</label>
-                  <input 
-                    type="number" 
-                    className="form-control" 
-                    placeholder="5000" 
-                    min="100" 
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="5000"
+                    min="100"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    required 
+                    required
                   />
                 </div>
 
                 {/* Quick Amount Buttons */}
                 <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginBottom: 'var(--space-lg)' }}>
                   {quickAmounts.map(amt => (
-                    <button 
+                    <button
                       key={amt}
-                      type="button" 
+                      type="button"
                       className={`btn btn-sm btn-outline quick-amount ${amount === String(amt) ? 'btn-blue' : ''}`}
                       onClick={() => setAmount(String(amt))}
                     >
@@ -186,8 +186,8 @@ export default function Donate() {
 
                 <div className="form-group">
                   <label><i className="fa-solid fa-bullseye"></i> Purpose</label>
-                  <select 
-                    className="form-control" 
+                  <select
+                    className="form-control"
                     value={purpose}
                     onChange={(e) => setPurpose(e.target.value)}
                     required
@@ -211,7 +211,7 @@ export default function Donate() {
                 <div className="bank-card-container">
                   <div className="premium-bank-card" style={{ animation: 'fadeInUp 0.8s ease forwards' }}>
                     <div className="brand-header">
-                      <span className="bank-name"><i className="fa-solid fa-building-columns"></i> COMMERCIAL BANK</span>
+                      <span className="bank-name"><i className="fa-solid fa-building-columns"></i> SEYLAN BANK</span>
                       <span className="premium-tag">premium</span>
                     </div>
                     <div className="card-mid">
@@ -219,7 +219,7 @@ export default function Donate() {
                       <i className="fa-solid fa-wifi wifi-symbol"></i>
                     </div>
                     <div>
-                      <div className="card-number">8012 3456 7890 1234</div>
+                      <div className="card-number">0430-33442976-002</div>
                       <div className="card-labels">
                         <span>BRANCH</span>
                         <span>ACC TYPE</span>
@@ -230,7 +230,7 @@ export default function Donate() {
                       </div>
                     </div>
                     <div className="card-footer">
-                      <div className="card-holder">LIONS CLUB HOMAGAMA DIAMONDS</div>
+                      <div className="card-holder">M/S LIONS CLUB OF HOMAGAMA DIAMONDS</div>
                       <div className="mastercard-logo">
                         <div className="circle red"></div>
                         <div className="circle yellow"></div>
@@ -242,21 +242,21 @@ export default function Donate() {
                 {/* Bank Slip Upload Zone */}
                 <div className="form-group">
                   <label><i className="fa-solid fa-receipt"></i> Upload Bank Slip (Image or PDF)</label>
-                  <div 
-                    className={`upload-zone ${dragOver ? 'drag-over' : ''}`} 
+                  <div
+                    className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
                     onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                     onDragLeave={() => setDragOver(false)}
                     onDrop={handleDrop}
                     style={{ padding: 'var(--space-xl) var(--space-md)', marginTop: '6px' }}
                   >
-                    <input 
-                      type="file" 
-                      accept="image/*,application/pdf" 
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
                       onChange={(e) => {
                         const file = e.target.files[0];
                         if (file) handleFileSelect(file);
                       }}
-                      required={!slipData} 
+                      required={!slipData}
                     />
                     <div className="upload-zone-icon" style={{ fontSize: '2rem' }}><i className="fa-solid fa-cloud-arrow-up"></i></div>
                     <p className="upload-zone-text" style={{ fontSize: '0.9rem' }}><strong>Click to upload</strong> or drag slip here</p>

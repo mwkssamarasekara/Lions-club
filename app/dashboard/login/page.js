@@ -41,7 +41,7 @@ export default function Login() {
       <div className="login-card">
         <img src="/assets/img/logo.png" alt="Lions Logo" />
         <h2>Admin Login</h2>
-        <p>Lions Diamond Homagama</p>
+        <p>Lions Diamonds Homagama</p>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label><i className="fa-solid fa-envelope"></i> Email Address</label>
