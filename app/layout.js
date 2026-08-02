@@ -1,37 +1,97 @@
-'use client';
-
-import { useEffect } from 'react';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { usePathname } from 'next/navigation';
+import 'aos/dist/aos.css';
+import ClientLayoutShell from '@/components/ClientLayoutShell';
+
+const siteUrl = 'https://lionsdiamondshomagama.lk';
+
+export const metadata = {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'Lions Diamonds Homagama | Community Service Excellence',
+    template: '%s | Lions Diamonds Homagama',
+  },
+  description:
+    'Lions Diamonds Homagama - Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs.',
+  keywords: [
+    'Lions Club Homagama',
+    'Lions Diamonds Homagama',
+    'Lions Clubs International District 306 D7',
+    'community service Homagama',
+    'volunteer Sri Lanka',
+    'donate Homagama',
+  ],
+  alternates: {
+    canonical: '/',
+  },
+  icons: {
+    icon: '/assets/img/logo.png',
+  },
+  openGraph: {
+    title: 'Lions Diamonds Homagama | Community Service Excellence',
+    description:
+      'Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs.',
+    url: siteUrl,
+    siteName: 'Lions Diamonds Homagama',
+    images: ['/assets/img/hero-bg.jpg'],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Lions Diamonds Homagama | Community Service Excellence',
+    description:
+      'Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs.',
+    images: ['/assets/img/hero-bg.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: 'Lions Diamonds Homagama',
+  alternateName: 'Lions Club Of Homagama Diamonds',
+  url: siteUrl,
+  logo: `${siteUrl}/assets/img/logo.png`,
+  description:
+    'Lions Diamonds Homagama serves the community of Homagama, Sri Lanka through humanitarian projects, health camps, donations, and volunteer programs, as part of Lions Clubs International District 306 D7.',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Homagama',
+    addressCountry: 'LK',
+  },
+  memberOf: {
+    '@type': 'Organization',
+    name: 'Lions Clubs International',
+  },
+};
 
 export default function RootLayout({ children }) {
-  const pathname = usePathname();
-  const isDashboard = pathname.startsWith('/dashboard');
-
-  useEffect(() => {
-    // Initialize AOS (Animate on Scroll)
-    import('aos').then((AOS) => {
-      AOS.init({ duration: 800, once: true, offset: 50 });
-    });
-  }, []);
-
   return (
-    <html lang="si" data-theme="light">
+    <html lang="en" data-theme="light">
       <head>
-        <title>Lions Diamonds Homagama | Community Service Excellence</title>
-        <meta name="description" content="Lions Diamonds Homagama - Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs." />
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-        <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
-        <link rel="icon" href="/assets/img/logo.png" type="image/png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
       </head>
       <body>
-        {!isDashboard && <Navbar />}
-        {children}
-        {!isDashboard && <Footer />}
+        <ClientLayoutShell>{children}</ClientLayoutShell>
       </body>
     </html>
   );
