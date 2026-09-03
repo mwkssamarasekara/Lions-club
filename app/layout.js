@@ -7,12 +7,13 @@ const siteUrl = 'https://lionsdiamondshomagama.lk';
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Lions Diamonds Homagama | Community Service Excellence',
-    template: '%s | Lions Diamonds Homagama',
+    default: 'Lions Club of Homagama Diamonds | Community Service Excellence',
+    template: '%s | Lions Club of Homagama Diamonds',
   },
   description:
-    'Lions Diamonds Homagama - Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs.',
+    'Lions Club of Homagama Diamonds - Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs.',
   keywords: [
+    'Lions Club of Homagama Diamonds',
     'Lions Club Homagama',
     'Lions Diamonds Homagama',
     'Lions Clubs International District 306 D7',
@@ -27,18 +28,18 @@ export const metadata = {
     icon: '/assets/img/logo.png',
   },
   openGraph: {
-    title: 'Lions Diamonds Homagama | Community Service Excellence',
+    title: 'Lions Club of Homagama Diamonds | Community Service Excellence',
     description:
       'Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs.',
     url: siteUrl,
-    siteName: 'Lions Diamonds Homagama',
+    siteName: 'Lions Club of Homagama Diamonds',
     images: ['/assets/img/hero-bg.jpg'],
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Lions Diamonds Homagama | Community Service Excellence',
+    title: 'Lions Club of Homagama Diamonds | Community Service Excellence',
     description:
       'Serving the community of Homagama with compassion. Join us in making a difference through community service, donations, and volunteer programs.',
     images: ['/assets/img/hero-bg.jpg'],
@@ -66,12 +67,12 @@ export const viewport = {
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'NGO',
-  name: 'Lions Diamonds Homagama',
-  alternateName: 'Lions Club Of Homagama Diamonds',
+  name: 'Lions Club of Homagama Diamonds',
+  alternateName: 'Lions Diamonds Homagama',
   url: siteUrl,
   logo: `${siteUrl}/assets/img/logo.png`,
   description:
-    'Lions Diamonds Homagama serves the community of Homagama, Sri Lanka through humanitarian projects, health camps, donations, and volunteer programs, as part of Lions Clubs International District 306 D7.',
+    'Lions Club of Homagama Diamonds serves the community of Homagama, Sri Lanka through humanitarian projects, health camps, donations, and volunteer programs, as part of Lions Clubs International District 306 D7.',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Homagama',

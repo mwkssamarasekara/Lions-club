@@ -2,21 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getEvents, formatDate } from '@/lib/firestore-db';
+import { getEvents, getProjectDocuments, formatDate } from '@/lib/firestore-db';
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const data = await getEvents();
-        setProjects(data);
-        setFilteredProjects(data);
+        const [projData, docData] = await Promise.all([
+          getEvents(),
+          getProjectDocuments()
+        ]);
+        setProjects(projData);
+        setFilteredProjects(projData);
+        setDocuments(docData);
       } catch (e) {
         console.error(e);
       } finally {
@@ -39,8 +45,8 @@ export default function Projects() {
     <>
       {/* Page Header */}
       <section className="page-header">
-        <h1 data-aos="fade-up"><i className="fa-solid fa-diagram-project"></i> Our Projects</h1>
-        <p data-aos="fade-up" data-aos-delay="100">Explore our community initiatives and volunteer programs that make a difference in Homagama.</p>
+        <h1 data-aos="fade-up"><i className="fa-solid fa-diagram-project"></i> Our Projects & Reports</h1>
+        <p data-aos="fade-up" data-aos-delay="100">Explore community initiatives, volunteer programs, and official project PDF documents in Homagama.</p>
         <div className="breadcrumb" data-aos="fade-up" data-aos-delay="200">
           <Link href="/">Home</Link>
           <i className="fa-solid fa-chevron-right"></i>
@@ -51,6 +57,11 @@ export default function Projects() {
       {/* Projects Grid Section */}
       <section className="section">
         <div className="container">
+          <div className="section-header" data-aos="fade-up">
+            <h2>Featured Initiatives</h2>
+            <p>Our ongoing, upcoming, and completed community service activities.</p>
+          </div>
+
           {/* Toolbar with filter tabs */}
           <div className="toolbar" style={{ justifyContent: 'center', marginBottom: 'var(--space-2xl)' }}>
             <div className="filter-tabs" style={{ marginBottom: 0 }}>
@@ -114,6 +125,82 @@ export default function Projects() {
         </div>
       </section>
 
+      {/* Project PDF Documents Section */}
+      <section className="section" style={{ background: 'var(--gray-50)', borderTop: '1px solid var(--gray-200)' }}>
+        <div className="container">
+          <div className="section-header" data-aos="fade-up">
+            <h2><i className="fa-solid fa-file-pdf" style={{ color: 'var(--danger)' }}></i> Project Reports & Documents</h2>
+            <p>Access official project proposals, impact reports, and documentation. Click any document to view it in full screen.</p>
+          </div>
+
+          <div className="grid-3">
+            {loading ? (
+              <div className="empty-state" style={{ gridColumn: '1/-1' }}>
+                <div className="spinner"></div>
+                <p>Loading documents...</p>
+              </div>
+            ) : documents.length === 0 ? (
+              <div className="empty-state" style={{ gridColumn: '1/-1' }}>
+                <i className="fa-solid fa-file-excel"></i>
+                <p>No project documents available right now.</p>
+              </div>
+            ) : (
+              documents.map((doc, i) => (
+                <div 
+                  key={doc.id || i}
+                  className="card"
+                  style={{
+                    padding: 'var(--space-lg)',
+                    borderRadius: 'var(--radius-lg)',
+                    background: 'var(--white)',
+                    border: '1px solid var(--gray-200)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    boxShadow: 'var(--shadow-sm)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  data-aos="fade-up"
+                  data-aos-delay={(i % 3) * 100}
+                >
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-md)' }}>
+                      <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(239,68,68,0.1)', color: 'var(--danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                        <i className="fa-solid fa-file-pdf"></i>
+                      </div>
+                      <span className="badge" style={{ background: 'var(--blue-50)', color: 'var(--blue-700)', fontSize: '0.75rem' }}>
+                        {doc.projectTitle || 'Project Doc'}
+                      </span>
+                    </div>
+
+                    <h3 style={{ fontSize: '1.1rem', color: 'var(--blue-900)', marginBottom: 'var(--space-xs)' }}>
+                      {doc.title}
+                    </h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', lineHeight: '1.5', margin: '0 0 var(--space-md)' }}>
+                      {doc.description}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--gray-400)', marginBottom: 'var(--space-md)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <i className="fa-regular fa-clock"></i> Uploaded: {formatDate(doc.uploadedAt)}
+                    </div>
+
+                    <button 
+                      className="btn btn-primary btn-sm" 
+                      onClick={() => setSelectedDoc(doc)}
+                      style={{ width: '100%', justifyContent: 'center' }}
+                    >
+                      <i className="fa-solid fa-expand"></i> Open Document (PDF)
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Project Details Modal */}
       {selectedProject && (
         <div className="modal-overlay active" onClick={() => setSelectedProject(null)}>
@@ -136,6 +223,66 @@ export default function Projects() {
                   {selectedProject.description || 'No description available for this project.'}
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PDF Document Large Viewer Modal */}
+      {selectedDoc && (
+        <div className="modal-overlay active" onClick={() => setSelectedDoc(null)}>
+          <div 
+            className="modal" 
+            onClick={(e) => e.stopPropagation()} 
+            style={{ 
+              maxWidth: '1000px', 
+              width: '95%', 
+              height: '90vh',
+              maxHeight: '900px',
+              borderRadius: 'var(--radius-xl)', 
+              overflow: 'hidden', 
+              padding: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              background: '#ffffff'
+            }}
+          >
+            {/* PDF Header */}
+            <div style={{ padding: '14px 20px', background: 'var(--blue-900)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <i className="fa-solid fa-file-pdf" style={{ color: 'var(--danger)', fontSize: '1.4rem' }}></i>
+                <div>
+                  <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'white' }}>{selectedDoc.title}</h3>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--gray-300)' }}>Project: {selectedDoc.projectTitle || 'General'}</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <a 
+                  href={selectedDoc.pdfUrl} 
+                  download={selectedDoc.fileName || 'Document.pdf'}
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="btn btn-sm btn-outline" 
+                  style={{ color: 'white', borderColor: 'rgba(255,255,255,0.4)', padding: '6px 14px', fontSize: '0.8rem' }}
+                >
+                  <i className="fa-solid fa-download"></i> Download PDF
+                </a>
+                <button 
+                  onClick={() => setSelectedDoc(null)} 
+                  style={{ background: 'rgba(255,255,255,0.15)', color: 'white', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+
+            {/* PDF Iframe Viewer */}
+            <div style={{ flex: 1, background: '#525659', width: '100%', height: '100%' }}>
+              <iframe 
+                src={selectedDoc.pdfUrl} 
+                title={selectedDoc.title} 
+                style={{ width: '100%', height: '100%', border: 'none' }}
+              ></iframe>
             </div>
           </div>
         </div>

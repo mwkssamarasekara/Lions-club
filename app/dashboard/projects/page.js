@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  getEvents, 
-  addEvent, 
-  updateEvent, 
-  deleteEvent, 
-  formatDate 
+import {
+  getEvents,
+  addEvent,
+  updateEvent,
+  deleteEvent,
+  formatDate
 } from '@/lib/firestore-db';
 
 export default function ProjectsDashboard() {
@@ -52,7 +52,7 @@ export default function ProjectsDashboard() {
   // Handle Search and Filter
   useEffect(() => {
     const q = searchQuery.toLowerCase();
-    let temp = projects.filter(p => 
+    let temp = projects.filter(p =>
       (p.title || '').toLowerCase().includes(q) ||
       (p.description || '').toLowerCase().includes(q) ||
       (p.location || '').toLowerCase().includes(q)
@@ -111,8 +111,8 @@ export default function ProjectsDashboard() {
   };
 
   const handleFileSelect = (file) => {
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File too large. Maximum 5MB.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File too large. Maximum 10MB.');
       return;
     }
     const reader = new FileReader();
@@ -210,9 +210,9 @@ export default function ProjectsDashboard() {
         </div>
         <div className="search-bar">
           <i className="fa-solid fa-search"></i>
-          <input 
-            type="text" 
-            placeholder="Search projects..." 
+          <input
+            type="text"
+            placeholder="Search projects..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -288,7 +288,7 @@ export default function ProjectsDashboard() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>
-                <i className={`fa-solid ${editId ? 'fa-pen' : 'fa-plus'}`} style={{ color: 'var(--purple-600)' }}></i> 
+                <i className={`fa-solid ${editId ? 'fa-pen' : 'fa-plus'}`} style={{ color: 'var(--purple-600)' }}></i>
                 {editId ? ' Edit Project' : ' Add Project'}
               </h3>
               <button className="modal-close" onClick={() => setIsOpen(false)}><i className="fa-solid fa-xmark"></i></button>
@@ -297,51 +297,51 @@ export default function ProjectsDashboard() {
             <form onSubmit={handleSave}>
               <div className="form-group">
                 <label><i className="fa-solid fa-heading"></i> Project Title</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
+                <input
+                  type="text"
+                  className="form-control"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Enter project title" 
-                  required 
+                  placeholder="Enter project title"
+                  required
                 />
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-align-left"></i> Description</label>
-                <textarea 
-                  className="form-control" 
+                <textarea
+                  className="form-control"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Project description..." 
-                  rows="3" 
+                  placeholder="Project description..."
+                  rows="3"
                   required
                 ></textarea>
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-location-dot"></i> Location</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
+                <input
+                  type="text"
+                  className="form-control"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Homagama Hospital" 
-                  required 
+                  placeholder="e.g. Homagama Hospital"
+                  required
                 />
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-calendar"></i> Date</label>
-                <input 
-                  type="date" 
-                  className="form-control" 
+                <input
+                  type="date"
+                  className="form-control"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  required 
+                  required
                 />
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-tag"></i> Status</label>
-                <select 
-                  className="form-control" 
+                <select
+                  className="form-control"
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
                   required
@@ -354,15 +354,15 @@ export default function ProjectsDashboard() {
 
               {/* Upload Tabs */}
               <div className="upload-tabs">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`upload-tab ${uploadMode === 'file' ? 'active' : ''}`}
                   onClick={() => setUploadMode('file')}
                 >
                   <i className="fa-solid fa-computer"></i> Upload File
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`upload-tab ${uploadMode === 'url' ? 'active' : ''}`}
                   onClick={() => setUploadMode('url')}
                 >
@@ -373,7 +373,7 @@ export default function ProjectsDashboard() {
               {/* File Upload zone */}
               {uploadMode === 'file' ? (
                 <div>
-                  <div 
+                  <div
                     className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
                     onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                     onDragLeave={() => setDragOver(false)}
@@ -384,8 +384,8 @@ export default function ProjectsDashboard() {
                       if (file) handleFileSelect(file);
                     }}
                   >
-                    <input 
-                      type="file" 
+                    <input
+                      type="file"
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files[0];
@@ -394,7 +394,7 @@ export default function ProjectsDashboard() {
                     />
                     <div className="upload-zone-icon"><i className="fa-solid fa-cloud-arrow-up"></i></div>
                     <p className="upload-zone-text"><strong>Click to choose</strong> or drag & drop</p>
-                    <p className="upload-zone-hint">PNG, JPG, WEBP up to 5MB</p>
+                    <p className="upload-zone-hint">PNG, JPG, WEBP up to 10MB</p>
                   </div>
                   {selectedFileData && (
                     <div className="upload-preview" style={{ display: 'block' }}>
@@ -406,12 +406,12 @@ export default function ProjectsDashboard() {
                 <div>
                   <div className="form-group">
                     <label><i className="fa-solid fa-link"></i> Image URL</label>
-                    <input 
-                      type="url" 
-                      className="form-control" 
+                    <input
+                      type="url"
+                      className="form-control"
                       value={imageURL}
                       onChange={(e) => setImageURL(e.target.value)}
-                      placeholder="https://example.com/project.jpg" 
+                      placeholder="https://example.com/project.jpg"
                     />
                   </div>
                   {imageURL && (

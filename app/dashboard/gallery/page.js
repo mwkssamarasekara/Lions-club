@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  getGalleryImages, 
-  addGalleryImage, 
+import {
+  getGalleryImages,
+  addGalleryImage,
   deleteGalleryImage,
   getGalleryCategories,
   addGalleryCategory,
@@ -47,7 +47,7 @@ export default function GalleryDashboard() {
       setImages(imagesData);
       setFilteredImages(imagesData);
       setCategories(categoriesData);
-      
+
       if (categoriesData.length > 0) {
         setCategory(categoriesData[0].name);
       }
@@ -61,7 +61,7 @@ export default function GalleryDashboard() {
   // Handle Search & Filter
   useEffect(() => {
     const q = searchQuery.toLowerCase();
-    let temp = images.filter(img => 
+    let temp = images.filter(img =>
       (img.title || '').toLowerCase().includes(q) ||
       (img.category || '').toLowerCase().includes(q)
     );
@@ -93,8 +93,8 @@ export default function GalleryDashboard() {
   };
 
   const handleFileSelect = (file) => {
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File too large. Maximum 5MB.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File too large. Maximum 10MB.');
       return;
     }
     const reader = new FileReader();
@@ -185,7 +185,7 @@ export default function GalleryDashboard() {
       <div className="toolbar">
         <div className="filter-tabs" style={{ marginBottom: 0 }}>
           {filterTabs.map(cat => (
-            <button 
+            <button
               key={cat}
               className={`filter-tab ${filter === cat ? 'active' : ''}`}
               onClick={() => setFilter(cat)}
@@ -196,9 +196,9 @@ export default function GalleryDashboard() {
         </div>
         <div className="search-bar">
           <i className="fa-solid fa-search"></i>
-          <input 
-            type="text" 
-            placeholder="Search gallery..." 
+          <input
+            type="text"
+            placeholder="Search gallery..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -217,7 +217,7 @@ export default function GalleryDashboard() {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 'var(--space-lg)' }}>
           {filteredImages.map(img => (
-            <div 
+            <div
               key={img.id}
               className="dash-gallery-item"
               style={{
@@ -230,7 +230,7 @@ export default function GalleryDashboard() {
               }}
             >
               <img src={img.imageURL} alt={img.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <div 
+              <div
                 style={{
                   position: 'absolute',
                   inset: 0,
@@ -244,7 +244,7 @@ export default function GalleryDashboard() {
               >
                 <h4 style={{ margin: 0, fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{img.title || 'Untitled'}</h4>
                 <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>{img.category}</p>
-                <button 
+                <button
                   onClick={() => handleDelete(img.id)}
                   style={{
                     position: 'absolute',
@@ -284,19 +284,19 @@ export default function GalleryDashboard() {
             <form onSubmit={handleSave}>
               <div className="form-group">
                 <label><i className="fa-solid fa-heading"></i> Image Title</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
+                <input
+                  type="text"
+                  className="form-control"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Enter image title" 
-                  required 
+                  placeholder="Enter image title"
+                  required
                 />
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-tag"></i> Category</label>
-                <select 
-                  className="form-control" 
+                <select
+                  className="form-control"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   required
@@ -309,15 +309,15 @@ export default function GalleryDashboard() {
 
               {/* Upload Tabs */}
               <div className="upload-tabs">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`upload-tab ${uploadMode === 'file' ? 'active' : ''}`}
                   onClick={() => setUploadMode('file')}
                 >
                   <i className="fa-solid fa-computer"></i> Upload File
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`upload-tab ${uploadMode === 'url' ? 'active' : ''}`}
                   onClick={() => setUploadMode('url')}
                 >
@@ -328,7 +328,7 @@ export default function GalleryDashboard() {
               {/* File Upload zone */}
               {uploadMode === 'file' ? (
                 <div>
-                  <div 
+                  <div
                     className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
                     onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                     onDragLeave={() => setDragOver(false)}
@@ -339,8 +339,8 @@ export default function GalleryDashboard() {
                       if (file) handleFileSelect(file);
                     }}
                   >
-                    <input 
-                      type="file" 
+                    <input
+                      type="file"
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files[0];
@@ -349,7 +349,7 @@ export default function GalleryDashboard() {
                     />
                     <div className="upload-zone-icon"><i className="fa-solid fa-cloud-arrow-up"></i></div>
                     <p className="upload-zone-text"><strong>Click to choose</strong> or drag & drop</p>
-                    <p className="upload-zone-hint">PNG, JPG, WEBP up to 5MB</p>
+                    <p className="upload-zone-hint">PNG, JPG, WEBP up to 10MB</p>
                   </div>
                   {selectedFileData && (
                     <div className="upload-preview" style={{ display: 'block' }}>
@@ -361,12 +361,12 @@ export default function GalleryDashboard() {
                 <div>
                   <div className="form-group">
                     <label><i className="fa-solid fa-link"></i> Image URL</label>
-                    <input 
-                      type="url" 
-                      className="form-control" 
+                    <input
+                      type="url"
+                      className="form-control"
                       value={imageURL}
                       onChange={(e) => setImageURL(e.target.value)}
-                      placeholder="https://example.com/photo.jpg" 
+                      placeholder="https://example.com/photo.jpg"
                     />
                   </div>
                   {imageURL && (
@@ -408,8 +408,8 @@ export default function GalleryDashboard() {
                 <p style={{ color: 'var(--gray-400)', textAlign: 'center', fontSize: '0.9rem' }}>No categories found.</p>
               ) : (
                 categories.map(cat => (
-                  <div 
-                    key={cat.id} 
+                  <div
+                    key={cat.id}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -422,7 +422,7 @@ export default function GalleryDashboard() {
                     }}
                   >
                     <span style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--gray-800)' }}>{cat.name}</span>
-                    <button 
+                    <button
                       onClick={() => handleDeleteCategory(cat.id, cat.name)}
                       style={{
                         background: 'transparent',
@@ -444,13 +444,13 @@ export default function GalleryDashboard() {
             <form onSubmit={handleAddCategory} style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 'var(--space-lg)' }}>
               <div className="form-group" style={{ marginBottom: 'var(--space-md)' }}>
                 <label>Add New Category</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="e.g. Celebrations" 
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="e.g. Celebrations"
                   value={newCatName}
                   onChange={(e) => setNewCatName(e.target.value)}
-                  required 
+                  required
                 />
               </div>
               <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={catSaving}>

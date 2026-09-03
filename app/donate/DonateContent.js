@@ -16,12 +16,22 @@ export default function Donate() {
   const [dragOver, setDragOver] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const quickAmounts = [1000, 2500, 5000, 10000];
 
+  const handleCopyAccount = () => {
+    const text = `Bank: Seylan Bank\nBranch: Homagama (077)\nAccount Number: 0430-33442976-002\nAccount Name: M/S LIONS CLUB OF HOMAGAMA DIAMONDS`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  };
+
   const handleFileSelect = (file) => {
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File size exceeds 5MB limit.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size exceeds 10MB limit.');
       return;
     }
 
@@ -209,10 +219,10 @@ export default function Donate() {
 
                 {/* Premium Bank Card Display */}
                 <div className="bank-card-container">
-                  <div className="premium-bank-card" style={{ animation: 'fadeInUp 0.8s ease forwards' }}>
+                  <div className="premium-bank-card">
                     <div className="brand-header">
                       <span className="bank-name"><i className="fa-solid fa-building-columns"></i> SEYLAN BANK</span>
-                      <span className="premium-tag">premium</span>
+                      <span className="premium-tag">OFFICIAL ACCOUNT</span>
                     </div>
                     <div className="card-mid">
                       <div className="gold-chip"></div>
@@ -237,6 +247,16 @@ export default function Donate() {
                       </div>
                     </div>
                   </div>
+                  <div className="bank-card-actions">
+                    <button
+                      type="button"
+                      className="copy-bank-btn"
+                      onClick={handleCopyAccount}
+                    >
+                      <i className={`fa-solid ${copied ? 'fa-check' : 'fa-copy'}`} style={{ color: copied ? 'var(--success)' : 'inherit' }}></i>
+                      {copied ? 'Details Copied to Clipboard!' : 'Copy Bank Account Details'}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Bank Slip Upload Zone */}
@@ -260,7 +280,7 @@ export default function Donate() {
                     />
                     <div className="upload-zone-icon" style={{ fontSize: '2rem' }}><i className="fa-solid fa-cloud-arrow-up"></i></div>
                     <p className="upload-zone-text" style={{ fontSize: '0.9rem' }}><strong>Click to upload</strong> or drag slip here</p>
-                    <p className="upload-zone-hint">Images or PDF up to 5MB</p>
+                    <p className="upload-zone-hint">Images or PDF up to 10MB</p>
                   </div>
                   {/* Slip Preview */}
                   {slipData && (

@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  getMembers, 
-  addMember, 
-  updateMember, 
-  deleteMember, 
-  formatDate 
+import {
+  getMembers,
+  addMember,
+  updateMember,
+  deleteMember,
+  clearAllMembers,
+  formatDate
 } from '@/lib/firestore-db';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -53,7 +54,7 @@ export default function MembersDashboard() {
   useEffect(() => {
     const q = searchQuery.toLowerCase();
     setFilteredMembers(
-      members.filter(m => 
+      members.filter(m =>
         (m.name || '').toLowerCase().includes(q) ||
         (m.position || '').toLowerCase().includes(q) ||
         (m.email || '').toLowerCase().includes(q)
@@ -102,8 +103,8 @@ export default function MembersDashboard() {
 
   // File select
   const handleFileSelect = (file) => {
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File size exceeds 5MB limit.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size exceeds 10MB limit.');
       return;
     }
     const reader = new FileReader();
@@ -151,7 +152,7 @@ export default function MembersDashboard() {
   // PDF Report export
   const downloadPdf = () => {
     const doc = new jsPDF();
-    
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
     doc.setTextColor(15, 35, 71); // Navy blue
@@ -185,11 +186,20 @@ export default function MembersDashboard() {
     doc.save(`Lions_Homagama_Members_${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
+  const handleClearAll = () => {
+    if (confirm('Clear all members from the list?')) {
+      const list = clearAllMembers();
+      setMembers(list);
+      setFilteredMembers(list);
+    }
+  };
+
   return (
     <div className="dashboard-content">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-xl)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-xl)', flexWrap: 'wrap', gap: 'var(--space-sm)' }}>
         <h2 style={{ margin: 0 }}><i className="fa-solid fa-users" style={{ color: 'var(--blue-600)' }}></i> Members</h2>
-        <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+          <button className="btn btn-sm btn-outline" onClick={handleClearAll} style={{ color: 'var(--danger)', borderColor: 'var(--gray-300)' }}><i className="fa-solid fa-trash-can"></i> Clear All</button>
           <button className="btn btn-sm btn-outline" onClick={downloadPdf}><i className="fa-solid fa-file-pdf"></i> Download PDF</button>
           <button className="btn btn-sm btn-primary" onClick={handleAddOpen}><i className="fa-solid fa-plus"></i> Add Member</button>
         </div>
@@ -198,9 +208,9 @@ export default function MembersDashboard() {
       <div className="toolbar">
         <div className="search-bar">
           <i className="fa-solid fa-search"></i>
-          <input 
-            type="text" 
-            placeholder="Search members..." 
+          <input
+            type="text"
+            placeholder="Search members..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -275,7 +285,7 @@ export default function MembersDashboard() {
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>
-                <i className={`fa-solid ${editId ? 'fa-pen' : 'fa-plus'}`} style={{ color: 'var(--blue-600)' }}></i> 
+                <i className={`fa-solid ${editId ? 'fa-pen' : 'fa-plus'}`} style={{ color: 'var(--blue-600)' }}></i>
                 {editId ? ' Edit Member' : ' Add Member'}
               </h3>
               <button className="modal-close" onClick={() => setIsOpen(false)}><i className="fa-solid fa-xmark"></i></button>
@@ -284,45 +294,45 @@ export default function MembersDashboard() {
             <form onSubmit={handleSave}>
               <div className="form-group">
                 <label><i className="fa-solid fa-user"></i> Full Name</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
+                <input
+                  type="text"
+                  className="form-control"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter full name" 
-                  required 
+                  placeholder="Enter full name"
+                  required
                 />
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-envelope"></i> Email Address</label>
-                <input 
-                  type="email" 
-                  className="form-control" 
+                <input
+                  type="email"
+                  className="form-control"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@email.com" 
+                  placeholder="name@email.com"
                 />
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-phone"></i> Phone Number</label>
-                <input 
-                  type="tel" 
-                  className="form-control" 
+                <input
+                  type="tel"
+                  className="form-control"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+94 7X XXX XXXX" 
+                  placeholder="+94 7X XXX XXXX"
                 />
               </div>
               <div className="form-group">
                 <label><i className="fa-solid fa-briefcase"></i> Position / Role</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
+                <input
+                  type="text"
+                  className="form-control"
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
-                  placeholder="Type or select a position..." 
+                  placeholder="Type or select a position..."
                   list="positions-list"
-                  required 
+                  required
                 />
                 <datalist id="positions-list">
                   <option value="Member" />
@@ -339,15 +349,15 @@ export default function MembersDashboard() {
 
               {/* Upload Tabs */}
               <div className="upload-tabs">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`upload-tab ${uploadMode === 'file' ? 'active' : ''}`}
                   onClick={() => setUploadMode('file')}
                 >
                   <i className="fa-solid fa-computer"></i> Upload File
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`upload-tab ${uploadMode === 'url' ? 'active' : ''}`}
                   onClick={() => setUploadMode('url')}
                 >
@@ -358,7 +368,7 @@ export default function MembersDashboard() {
               {/* File Upload zone */}
               {uploadMode === 'file' ? (
                 <div>
-                  <div 
+                  <div
                     className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
                     onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                     onDragLeave={() => setDragOver(false)}
@@ -369,8 +379,8 @@ export default function MembersDashboard() {
                       if (file) handleFileSelect(file);
                     }}
                   >
-                    <input 
-                      type="file" 
+                    <input
+                      type="file"
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files[0];
@@ -379,7 +389,7 @@ export default function MembersDashboard() {
                     />
                     <div className="upload-zone-icon"><i className="fa-solid fa-cloud-arrow-up"></i></div>
                     <p className="upload-zone-text"><strong>Click to choose</strong> or drag & drop</p>
-                    <p className="upload-zone-hint">PNG, JPG, WEBP up to 5MB</p>
+                    <p className="upload-zone-hint">PNG, JPG, WEBP up to 10MB</p>
                   </div>
                   {selectedFileData && (
                     <div className="upload-preview" style={{ display: 'block' }}>
@@ -391,12 +401,12 @@ export default function MembersDashboard() {
                 <div>
                   <div className="form-group">
                     <label><i className="fa-solid fa-link"></i> Image URL</label>
-                    <input 
-                      type="url" 
-                      className="form-control" 
+                    <input
+                      type="url"
+                      className="form-control"
                       value={photoURL}
                       onChange={(e) => setPhotoURL(e.target.value)}
-                      placeholder="https://example.com/photo.jpg" 
+                      placeholder="https://example.com/photo.jpg"
                     />
                   </div>
                   {photoURL && (

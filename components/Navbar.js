@@ -45,6 +45,7 @@ export default function Navbar() {
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Projects', href: '/projects' },
+    { label: 'Videos', href: '/short-videos' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'Contact', href: '/contact' }
   ];
@@ -53,8 +54,11 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled || mobileOpen ? 'scrolled' : ''}`}>
       <div className="container">
         <Link href="/" className="navbar-brand">
-          <img src="/assets/img/logo.png" alt="Logo" />
-          <span>Lions Diamonds</span>
+          <img src="/assets/img/logo.png" alt="Lions Club of Homagama Diamonds" />
+          <div className="brand-title-box">
+            <span className="brand-line-1">Lions Club of</span>
+            <span className="brand-line-2">Homagama Diamonds</span>
+          </div>
         </Link>
         
         <div className={`nav-links ${mobileOpen ? 'open' : ''}`} id="navLinks">

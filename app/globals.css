@@ -672,25 +672,47 @@ p { margin-bottom: var(--space-md); }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-xs);
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+  margin-right: 8px;
 }
 
 .navbar-brand img {
-  height: 45px;
-  width: auto;
+  height: 42px;
+  width: 42px;
+  object-fit: contain;
+  flex-shrink: 0;
   border-radius: var(--radius-full);
 }
 
-.navbar-brand span {
+.brand-title-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.brand-line-1,
+.brand-line-2 {
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   color: var(--white);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .nav-links {
@@ -2851,4 +2873,344 @@ select.form-control {
   height: 180px;
   object-fit: cover;
 }
+
+/* ---------- Responsive Bank Card ---------- */
+.bank-card-container {
+  width: 100%;
+  max-width: 440px;
+  margin: var(--space-xl) auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.premium-bank-card {
+  width: 100%;
+  aspect-ratio: 1.586 / 1;
+  min-height: 210px;
+  background: linear-gradient(135deg, #0b192c 0%, #1e3e62 55%, #000000 100%);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35), 0 0 25px rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  user-select: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.premium-bank-card:hover {
+  transform: translateY(-4px) rotateX(2deg);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.45), 0 0 30px rgba(245, 158, 11, 0.3);
+}
+
+.premium-bank-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+.brand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 6px;
+}
+
+.bank-name {
+  font-size: clamp(0.68rem, 2.2vw, 0.88rem);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #f59e0b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.premium-tag {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  font-size: clamp(0.5rem, 1.5vw, 0.62rem);
+  padding: 2px 7px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.card-mid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+}
+
+.gold-chip {
+  width: clamp(30px, 7.5vw, 40px);
+  height: clamp(22px, 5.5vw, 28px);
+  background: linear-gradient(135deg, #ffe066 0%, #d4af37 50%, #aa820a 100%);
+  border-radius: 5px;
+  border: 1px solid #997300;
+  position: relative;
+}
+
+.gold-chip::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px dashed rgba(0,0,0,0.35);
+  border-radius: 2px;
+}
+
+.wifi-symbol {
+  font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+  color: rgba(255,255,255,0.7);
+}
+
+.card-number {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(0.85rem, 3.2vw, 1.25rem);
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.card-labels {
+  display: flex;
+  gap: 20px;
+  font-size: clamp(0.5rem, 1.4vw, 0.58rem);
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-dates {
+  display: flex;
+  gap: 14px;
+  font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 2px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  margin-top: auto;
+  gap: 8px;
+}
+
+.card-holder {
+  font-size: clamp(0.58rem, 1.8vw, 0.72rem);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #f3f4f6;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: break-word;
+  flex: 1;
+  margin-right: 4px;
+}
+
+.mastercard-logo {
+  display: flex;
+  flex-shrink: 0;
+  align-self: flex-end;
+  margin-bottom: 2px;
+}
+
+.mastercard-logo .circle {
+  width: clamp(14px, 4vw, 20px);
+  height: clamp(14px, 4vw, 20px);
+  border-radius: 50%;
+  opacity: 0.9;
+}
+
+.mastercard-logo .red {
+  background: #eb001b;
+}
+
+.mastercard-logo .yellow {
+  background: #f79e1b;
+  margin-left: -9px;
+}
+
+.bank-card-actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.copy-bank-btn {
+  background: var(--white);
+  border: 2px solid var(--blue-600);
+  color: var(--blue-700);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.copy-bank-btn:hover {
+  background: var(--blue-600);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- Mobile Drawer & Responsive Responsiveness Overrides ---------- */
+.brand-title-text {
+  font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sidebar-toggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1050;
+  display: none;
+  background: var(--blue-900);
+  color: white;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 992px) {
+  .sidebar-toggle {
+    display: flex !important;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1040;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .dashboard-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .dashboard-content {
+    padding-top: 60px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4, .impact-grid, .summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .page-header h1 {
+    font-size: 1.75rem !important;
+  }
+  .navbar-brand {
+    gap: 8px;
+    margin-right: 4px;
+  }
+  .navbar-brand img {
+    height: 38px;
+    width: 38px;
+  }
+  .brand-title-box {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+  }
+  .brand-line-1 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fbbf24;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  .brand-line-2 {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  .modal {
+    width: 95% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 10px;
+  }
+  .navbar-brand {
+    gap: 6px;
+  }
+  .navbar-brand img {
+    height: 34px;
+    width: 34px;
+  }
+  .brand-line-1 {
+    font-size: 0.65rem;
+  }
+  .brand-line-2 {
+    font-size: 0.76rem;
+  }
+  .nav-actions {
+    gap: 4px;
+  }
+  .theme-toggle, .nav-profile {
+    width: 34px;
+    height: 34px;
+    font-size: 0.85rem;
+  }
+}
+
 

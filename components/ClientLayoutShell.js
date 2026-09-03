@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import FestivalThemeEffects from '@/components/FestivalThemeEffects';
 
 export default function ClientLayoutShell({ children }) {
   const pathname = usePathname();
@@ -17,6 +18,7 @@ export default function ClientLayoutShell({ children }) {
 
   return (
     <>
+      <FestivalThemeEffects />
       {!isDashboard && <Navbar />}
       {children}
       {!isDashboard && <Footer />}
